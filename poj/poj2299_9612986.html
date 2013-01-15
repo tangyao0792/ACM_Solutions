@@ -1,0 +1,89 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2299">2299</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 7316K</td><td width=10px></td><td><b>Time:</b> 1438MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;iostream&gt;
+
+using namespace std;
+__int64 count;
+void MergeSort(__int64 a[],__int64 first, __int64 last, __int64 p[]);
+
+int main()
+{
+    __int64 n;
+    while(cin &gt;&gt; n &#38;&#38; n != 0)
+    {
+        __int64 *a = new __int64[n];
+        __int64 *p = new __int64[n];
+        for(__int64 i = 0; i &lt; n; i++)
+        {
+            cin &gt;&gt; a[i];
+        }
+        count = 0;
+        MergeSort(a,0 ,n-1, p);
+        cout &lt;&lt; count &lt;&lt; endl;
+
+        delete []a;
+        delete []p;
+    }
+    return 0;
+}
+
+void MergeSort(__int64 a[], __int64 first, __int64 last, __int64 p[])
+{
+    if(first &lt; last)
+    {
+        MergeSort(a, first, (first+last)/2,p);
+        MergeSort(a, (first+last)/2+1, last, p);
+
+        __int64 mid = (first + last) / 2;
+        __int64 i = first;
+        __int64 j = mid+1;
+        __int64 k = first;
+        for(; i &lt; last +1; i++)
+        {
+            p[i] = a[i];
+        }
+        i = first;
+
+        while(i &lt; mid+1 &#38;&#38; j &lt; last+1)
+        {
+            while(i &lt; mid+1 &#38;&#38; j &lt; last+1)
+            {
+                if(p[i] &lt; p[j])
+                {
+                    a[k++] = p[i++];
+                }
+                else
+                {
+                    a[k++] = p[j++];
+                    count += mid - i +1;        //i组剩得数都算
+                }
+            }
+
+            while(i &lt; mid+1)
+            {
+                a[k++] = p[i++];
+            }
+
+            while(j &lt; last+1)
+            {
+                a[k++] = p[j++];
+            }
+        }
+
+
+    }
+}
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,138 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1185">1185</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 2548K</td><td width=10px></td><td><b>Time:</b> 282MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;iostream&gt;
+
+using namespace std;
+
+const int MAXN=110;
+const int MAXS=65;
+
+int n,m;
+int map[MAXN];
+int cnt;
+int st[MAXS];       //状态
+int num[MAXS];      //num[i]表示st[i]时炮台的数量
+int dp[MAXN][MAXS][MAXS];
+//dp[r][i][j]   表示第r行状态为st[i]时，第r-1行状态为j时
+//前r行的数量
+//dp[r][i][j]=max(dp[r][i][j],dp[r-1][j][k]+num[i])
+
+bool isOk(int x)
+{
+    if(x&#38;(x&lt;&lt;1))    return false;
+    if(x&#38;(x&lt;&lt;2))    return false;
+    return true;
+}
+
+void countState()
+{
+    int cnt=0;
+    for(int i=0;i&lt;(1&lt;&lt;10)+1;i++)
+        if(isOk(i))
+            cnt++;
+    printf(&#34;%d&#34;,cnt);
+}
+
+int getNum(int x)
+{
+    int ans=0;
+
+    for(int i=1;i&lt;=x;i=i&lt;&lt;1)
+        if(i &#38; x)
+            ans++;
+
+    return ans;
+}
+
+void makeState()
+{
+    cnt=0;
+    for(int i=0;i&lt;(1&lt;&lt;m);i++)
+        if(isOk(i))
+        {
+            st[cnt]=i;
+            num[cnt++]=getNum(i);
+        }
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+
+    memset(map,0,sizeof(map));
+    memset(dp,-1,sizeof(dp));
+
+    cin&gt;&gt;n&gt;&gt;m;
+    char c;
+    for(int i=0;i&lt;n;i++)
+        for(int j=0;j&lt;m;j++)
+        {
+            cin&gt;&gt;c;
+            if(c==&#39;H&#39;)
+                map[i]=map[i]|(1&lt;&lt;j);
+        }
+
+    makeState();
+
+    for(int i=0;i&lt;cnt;i++)          //第0行
+    {
+        if(st[i] &#38; map[0])  continue;
+        dp[0][i][0]=num[i];
+    }
+
+    for(int i=0;i&lt;cnt;i++)          //第1行
+    {
+        if(st[i] &#38; map[0])  continue;
+        for(int j=0;j&lt;cnt;j++)
+        {
+            if(st[j] &#38; st[i])   continue;
+            if(st[j] &#38; map[1])  continue;
+
+            dp[1][j][i]=max(dp[1][j][i],dp[0][i][0]+num[j]);
+        }
+    }
+
+    for(int r=2;r&lt;n;r++)
+    {
+        for(int i=0;i&lt;cnt;i++)      //第r行的状态
+        {
+            if(st[i] &#38; map[r])  continue;
+            for(int j=0;j&lt;cnt;j++)  //r-1
+            {
+                if(st[i] &#38; st[j])   continue;
+                for(int k=0;k&lt;cnt;k++)  //r-2
+                {
+                    if(st[i] &#38; st[k])   continue;
+                    if(dp[r-1][j][k]==-1)   continue;
+
+                    dp[r][i][j]=max(dp[r][i][j],dp[r-1][j][k]+num[i]);
+                }
+            }
+        }
+    }
+    int ans=-1;
+    for(int i=0;i&lt;cnt;i++)
+        for(int j=0;j&lt;cnt;j++)
+            ans=max(ans,dp[n-1][i][j]);
+
+    printf(&#34;%d\n&#34;,ans);
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

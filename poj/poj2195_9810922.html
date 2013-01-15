@@ -1,0 +1,130 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2195">2195</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 3204K</td><td width=10px></td><td><b>Time:</b> 79MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;cstring&gt;
+#include&lt;queue&gt;
+
+using namespace std;
+
+const int MAXN=510;
+const int INF=1&lt;&lt;28;
+
+int cap[MAXN][MAXN],flow[MAXN][MAXN],d[MAXN],w[MAXN][MAXN];
+int mx[MAXN],my[MAXN],hx[MAXN],hy[MAXN],fa[MAXN];
+
+int n,m;
+int pm, ph;
+
+int abs(int x){return x&gt;0?x:-x;}
+int minmax();
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    while(scanf(&#34;%d %d&#34;,&#38;n,&#38;m)==2 &#38;&#38; n)
+    {
+        pm=2,ph=2;
+        for(int i=2;i&lt;=n+1;i++)
+            for(int j=2;j&lt;=m+1;j++)
+            {
+                char c;
+                cin&gt;&gt;c;
+                if(c==&#39;m&#39;)
+                {
+                    mx[pm]=i;
+                    my[pm]=j;
+                    pm++;
+                }
+                else if(c==&#39;H&#39;)
+                {
+                    hx[ph]=i;
+                    hy[ph]=j;
+                    ph++;
+                }
+            }
+        for(int i=0;i&lt;=pm+ph+10;i++)
+            for(int j=0;j&lt;=pm+ph+10;j++)
+                w[i][j]=INF;
+        memset(cap,0,sizeof(cap));
+        memset(flow,0,sizeof(flow));
+        for(int i=2;i&lt;pm;i++)
+        {
+            cap[0][i]=1;
+            w[0][i]=0;
+            cap[pm+i][1]=1;
+            w[pm+i][1]=0;
+        }
+        for(int i=2;i&lt;pm;i++)
+            for(int j=2;j&lt;ph;j++)
+            {
+                cap[i][pm+j]=1;
+                w[i][pm+j]=abs(mx[i]-hx[j])+abs(my[i]-hy[j]);
+                w[pm+j][i]=-w[i][pm+j];
+            }
+        printf(&#34;%d\n&#34;,minmax());
+    }
+    return 0;
+}
+
+int minmax()
+{
+    int c=0;
+    queue&lt;int&gt; q;
+    bool inq[MAXN];
+    for(;;)
+    {
+        memset(inq,false,sizeof(inq));
+        memset(fa,-1,sizeof(fa));
+        for(int i=0;i&lt;=pm+ph+10;i++)    d[i]=INF;
+        d[0]=0;
+        q.push(0);
+        while(!q.empty())
+        {
+            int x=q.front();
+            q.pop();
+            inq[x]=false;
+            for(int v=0;v&lt;=pm+ph+10;v++)
+            {
+                if(d[v]&gt;d[x]+w[x][v] &#38;&#38; cap[x][v]&gt;flow[x][v])
+                {
+                    d[v]=d[x]+w[x][v];
+                    fa[v]=x;
+                    if(!inq[v])
+                    {
+                       inq[v]=true;
+                       q.push(v);
+                    }
+                }
+            }
+        }
+        if(d[1]==INF)   break;
+        int a=INF;
+        for(int t=1;t!=0;t=fa[t])
+            a=min(a,cap[fa[t]][t]-flow[fa[t]][t]);
+        if(a==0)    break;
+        c+=d[1];
+        for(int t=1;t!=0;t=fa[t])
+        {
+            flow[fa[t]][t]+=a;
+            flow[t][fa[t]]-=a;
+        }
+    }
+    return c;
+}
+</pre>
+</ul>
+</body></html>

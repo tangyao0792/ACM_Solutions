@@ -1,0 +1,117 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2528">2528</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 35792K</td><td width=10px></td><td><b>Time:</b> 79MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include&lt;cstdio&gt;
+using namespace std;
+
+struct Cpost{
+    int L,R;
+};
+Cpost posters[10100];  //存储海报
+int x[20200];  //存储端点编号
+int Hash[10000010];  //存储离散后的端点的编号,端点的大小为1QW，所以要大。
+
+struct CNode{
+    int L,R;
+    bool BCovered;  //True表示被完全覆盖
+    CNode *pLeft,*pRight;
+};
+
+CNode Tree[1000000];
+int nNodeCount=0;
+
+int  Mid(CNode *pRoot){
+   return (pRoot-&gt;L+pRoot-&gt;R)/2;
+}
+
+void Create(CNode *pRoot,int L,int R){
+       pRoot-&gt;L=L;
+       pRoot-&gt;R=R;
+       pRoot-&gt;BCovered=false;
+       if(L==R)  return;
+           nNodeCount++;
+         pRoot-&gt;pLeft=Tree+nNodeCount;
+           nNodeCount++;
+         pRoot-&gt;pRight=Tree+nNodeCount;
+         Create(pRoot-&gt;pLeft,L,Mid(pRoot));
+         Create(pRoot-&gt;pRight,Mid(pRoot)+1,R);
+}
+
+bool Query(CNode* pRoot,int L,int R){  //返回true表示可见
+     if(pRoot-&gt;BCovered) return false; //已被完全覆盖
+      
+     //没有被完全覆盖
+     if(pRoot-&gt;R==R &#38;&#38; pRoot-&gt;L==L){
+          pRoot-&gt;BCovered=true;
+            return true;
+     }
+
+       bool bResult;
+        if(L&gt;=Mid(pRoot)+1){
+           bResult=Query(pRoot-&gt;pRight,L,R);
+        }
+        else if(R&lt;=Mid(pRoot)){
+           bResult=Query(pRoot-&gt;pLeft,L,R);
+        }
+        else{
+           bool b1=Query(pRoot-&gt;pLeft,L,Mid(pRoot)); 
+           bool b2=Query(pRoot-&gt;pRight,Mid(pRoot)+1,R);
+           bResult=b1||b2;
+        }
+      
+        //需要更新根节点的覆盖情况
+    if(pRoot-&gt;pLeft-&gt;BCovered &#38;&#38; pRoot-&gt;pRight-&gt;BCovered)
+        pRoot-&gt;BCovered=true;
+     return bResult;
+}
+
+int main(){
+    int c,n;
+    scanf(&#34;%d&#34;,&#38;c);
+    while(c--){
+       int nCount=0;
+       scanf(&#34;%d&#34;,&#38;n);
+       for(int i=0;i&lt;n;i++){
+           scanf(&#34;%d%d&#34;,&#38;posters[i].L,&#38;posters[i].R);
+           x[nCount++]=posters[i].L;
+           x[nCount++]=posters[i].R;
+       }
+     sort(x,x+nCount);
+     nCount=unique(x,x+nCount)-x;//unique返回的是去除重复后的，不重复那部分的最后一个位置
+     //离散化
+     int nInterval=0;
+     for(int j=0;j&lt;nCount;j++){
+         //Hash[x[j]]=nInterval;
+         /*if( i &lt; nCount -1) {
+             if( x[i+1] -x[i] == 1)
+                 nInterval++;
+             else
+                 nInterval+=2;
+         }*/
+          Hash[x[j]]=nInterval;
+          nInterval++;
+     }
+     Create(Tree,0,nInterval); //从零开始
+     int Sum=0;
+     for(int k=n-1;k&gt;=0;k--){  //从最外面的开始
+         if(Query(Tree,Hash[posters[k].L],Hash[posters[k].R]))
+             Sum++;
+     }
+      printf(&#34;%d\n&#34;,Sum);
+    }
+    return 0;
+}</pre>
+</ul>
+</body></html>

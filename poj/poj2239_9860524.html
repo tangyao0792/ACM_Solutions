@@ -1,0 +1,84 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2239">2239</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 420K</td><td width=10px></td><td><b>Time:</b> 32MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int MAXN=100;
+const int MAXM=310;
+bool g[MAXM][MAXN];
+int uN,vN;
+int xM[MAXM],yM[MAXN];
+bool chk[MAXM];
+
+bool SearchPath(int u)
+{
+    for(int v=1;v&lt;=vN;v++)
+    {
+        if(g[u][v] &#38;&#38; !chk[v])
+        {
+            chk[v]=true;
+            if(yM[v]==-1 || SearchPath(yM[v]))
+            {
+                yM[v]=u;
+                xM[u]=v;
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+int MaxMatch()
+{
+    memset(xM,-1,sizeof(xM));
+    memset(yM,-1,sizeof(yM));
+    int ans=0;
+    for(int u=1;u&lt;=uN;u++)
+    {
+        if(xM[u]==-1)
+        {
+            memset(chk,0,sizeof(chk));
+            if(SearchPath(u))   ans++;
+        }
+    }
+    return ans;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    while(scanf(&#34;%d&#34;,&#38;uN)==1)
+    {
+        memset(g,0,sizeof(g));
+        vN=99;
+        int t;
+        for(int i=1;i&lt;=uN;i++)
+        {
+            scanf(&#34;%d&#34;,&#38;t);
+            for(int j=0;j&lt;t;j++)
+            {
+                int p,q;
+                scanf(&#34;%d %d&#34;,&#38;p,&#38;q);
+                g[i][(p-1)*13+q]=true;
+            }
+        }
+        printf(&#34;%d\n&#34;,MaxMatch());
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

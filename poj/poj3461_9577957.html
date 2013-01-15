@@ -1,0 +1,82 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_c.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3461">3461</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 1412K</td><td width=10px></td><td><b>Time:</b> 110MS</td></tr>
+<tr><td><b>Language:</b> GCC</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_c" style="font-family:Courier New,Courier,monospace">#include&lt;stdio.h&gt;
+char word[10010];
+char text[1000010];
+int next[10010];
+
+void make_next();
+
+int main()
+{
+    int n;
+    int count;
+    scanf(&#34;%d&#34;,&#38;n);
+    for(int i = 0; i &lt; n; i++)
+    {
+        count = 0;
+        scanf(&#34;%s\n%s&#34;,word, text);
+        make_next();
+        for(int j = 0,k = 0; text[j]; )
+        {
+            if(word[k] == text[j]|| k == -1)
+            {
+                k++;
+                j++;
+            }
+            else
+            {
+                k = next[k];
+                continue;
+            }
+            if(!word[k])
+            {
+                count++;
+                k = next[k];
+            }
+        }
+        printf(&#34;%d\n&#34;,count);
+   }
+    return 0;
+}
+
+void make_next()
+{
+    next[0] = -1;
+    int i =1;
+    int j = -1;
+    while(word[i-1])
+    {
+        if(j == -1 || word[i-1] == word[j])
+        {
+            i++;
+            j++;
+            if( word[i-1] != word[j])
+            {
+                next[i-1] = j;
+            }
+            else
+            {
+                next[i-1] = next[j];
+            }
+        }
+        else
+        {
+            j = next[j];
+        }
+    }
+}
+</pre>
+</ul>
+</body></html>

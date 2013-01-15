@@ -1,0 +1,120 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2001">2001</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 1008K</td><td width=10px></td><td><b>Time:</b> 32MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;iostream&gt;
+#include&lt;set&gt;
+
+using namespace std;
+
+const int MAXN=3100;
+const int MAXM=40;
+const int tk=26,tb=&#39;a&#39;;
+
+char str[MAXN][MAXM];
+int tree[MAXN*MAXM][tk+1];
+int ss[MAXN*MAXM];
+
+int cnt,top;
+
+void init()
+{
+    top=1;
+    ss[0]=0;
+    memset(tree[0],0,sizeof(tree[0]));
+}
+
+int sear(char *s, int rank)
+{
+    for(int rt=0;(rt=tree[rt][*s-tb]);)
+    {
+        if(*(++s)==0)
+        {
+            if(ss[rt]&gt;1)    return tree[rt][tk];
+            break;
+        }
+    }
+    return -1;
+}
+
+void insert(char *s,int rank)
+{
+    int rt,nxt;
+    for(rt=0;*s;rt=nxt,s++)
+    {
+        nxt=tree[rt][*s-tb];
+        if(rt!=0)
+        {
+            ss[rt]++;
+            tree[rt][tk]=rank;
+        }
+
+        if(nxt==0)
+        {
+            tree[rt][*s-tb]=nxt=top;
+            memset(tree[top],0,sizeof(tree[top]));
+            ss[top]=0;
+            top++;
+        }
+    }
+    if(rt!=0)
+    {
+        ss[rt]++;
+        tree[rt][tk]=rank;
+    }
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+    cnt=1;
+    init();
+    while(scanf(&#34;%s&#34;,str[cnt])==1)
+    {
+        insert(str[cnt],cnt);
+        cnt++;
+    }
+
+    for(int i=1;i&lt;cnt;i++)
+    {
+        int nLen=strlen(str[i]);
+        char tmp[MAXM];
+
+        printf(&#34;%s &#34;,str[i]);
+        bool flag=false;
+
+        for(int j=1;j&lt;nLen+1;j++)
+        {
+            strcpy(tmp,str[i]);
+            tmp[j]=0;
+            if(sear(tmp,i)==-1)
+            {
+                flag=true;
+                printf(&#34;%s&#34;,tmp);
+                break;
+            }
+        }
+        if(!flag)
+        {
+           printf(&#34;%s&#34;,str[i]);
+        }
+        printf(&#34;\n&#34;);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

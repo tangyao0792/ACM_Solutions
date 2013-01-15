@@ -1,0 +1,47 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_c.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1005">1005</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 164K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_c" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+const double PI = 3.1415926;
+void main()
+{
+	int n;
+	int count;
+	int i;
+	double dist;
+	double radius;
+	double area = 0;
+	double x,y;
+	scanf(&#34;%d&#34;,&#38;n);
+	for( i = 0; i &lt; n; i++)
+	{
+		scanf(&#34;%lf %lf&#34;,&#38;x,&#38;y);
+		dist = sqrt(x * x + y * y);
+		area = 0;
+		radius = 0;
+		count = 0;
+		while(dist &gt; radius)
+		{
+			area += 50;
+			radius = sqrt (area * 2 / PI );
+			count++;
+		}
+		printf(&#34;Property %d: This property will begin eroding in year %d.\n&#34;, i +1 ,count );
+	}
+	
+	printf(&#34;END OF OUTPUT.\n&#34;);
+
+}</pre>
+</ul>
+</body></html>

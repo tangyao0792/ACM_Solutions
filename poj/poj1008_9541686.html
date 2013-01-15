@@ -1,0 +1,55 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_c.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1008">1008</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 168K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_c" style="font-family:Courier New,Courier,monospace">#include&lt;stdio.h&gt;
+#include&lt;string.h&gt;
+void main()
+{
+	char haab[19][10] =
+	{&#34;pop&#34;, &#34;no&#34;, &#34;zip&#34;, &#34;zotz&#34;, &#34;tzec&#34;, &#34;xul&#34;, &#34;yoxkin&#34;, &#34;mol&#34;, &#34;chen&#34;
+	, &#34;yax&#34;, &#34;zac&#34;, &#34;ceh&#34;, &#34;mac&#34;, &#34;kankin&#34;, &#34;muan&#34;, &#34;pax&#34;, &#34;koyab&#34;, &#34;cumhu&#34;,&#34;uayet&#34;};
+	
+	char tzolkin[20][10] =
+	{&#34;imix&#34;, &#34;ik&#34;, &#34;akbal&#34;, &#34;kan&#34;, &#34;chicchan&#34;, &#34;cimi&#34;, &#34;manik&#34;, &#34;lamat&#34;, &#34;muluk&#34;,
+	&#34;ok&#34;, &#34;chuen&#34;, &#34;eb&#34;, &#34;ben&#34;, &#34;ix&#34;, &#34;mem&#34;, &#34;cib&#34;, &#34;caban&#34;, &#34;eznab&#34;, &#34;canac&#34;, &#34;ahau&#34;		
+	};
+
+	int n, i, j;
+	char month[10];
+	int year, index,total;
+	int day;
+	
+	scanf(&#34;%d&#34;, &#38;n);
+	printf(&#34;%d\n&#34;,n);
+	for(i = 0; i &lt; n; i++)
+	{
+		scanf(&#34;%d. %s %d&#34;,&#38;day,month,&#38;year);
+		for(j = 0; j &lt; 19; j++)
+		{
+			if( strcmp(month,haab[j]) == 0)
+			{
+				index = j;
+				break;
+			}
+		}
+		total = day + year * 365 + index * 20;
+		year = total / 260;
+		day = total % 260;
+		index = day %20 ;
+		day = day %13 +1;
+		printf(&#34;%d %s %d\n&#34;,day,tzolkin[index],year);
+	}
+
+}</pre>
+</ul>
+</body></html>

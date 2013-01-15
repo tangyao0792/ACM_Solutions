@@ -1,0 +1,99 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2253">2253</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 1048K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;iostream&gt;
+#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;cmath&gt;
+#include&lt;queue&gt;
+
+using namespace std;
+
+const double EPS=1e-12;
+const int MAXN=210;
+const int INF=1&lt;&lt;28;
+
+double g[MAXN][MAXN],d[MAXN],x[MAXN],y[MAXN];
+int v[MAXN];
+int n, m;
+
+double dis(int i, int j)
+{
+    return sqrt((x[i]-x[j])*(x[i]-x[j])+(y[i]-y[j])*(y[i]-y[j]));
+}
+
+double dij();
+double min(double a, double b)
+{
+    if(a&gt;b+EPS)
+        return b;
+    return a;
+}
+double max(double a, double b)
+{
+    if(a&gt;b+EPS)
+        return a;
+    return b;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int nCount=0;
+    while(scanf(&#34;%d&#34;,&#38;n)==1&#38;&#38;n)
+    {
+        for(int i=0;i&lt;n;i++)
+            for(int j=0;j&lt;n;j++)
+                g[i][j]=INF;
+        nCount++;
+        for(int i=0;i&lt;n;i++)
+            scanf(&#34;%lf %lf&#34;,&#38;x[i],&#38;y[i]);
+        for(int i=0;i&lt;n;i++)
+            for(int j=0;j&lt;n;j++)
+                g[i][j]=dis(i,j);
+        printf(&#34;Scenario #%d\n&#34;,nCount);
+        printf(&#34;Frog Distance = %.3f\n\n&#34;,dij());
+    }
+    return 0;
+}
+
+double dij()
+{
+    for(int i=0;i&lt;n;i++)    d[i]=INF;
+    d[0]=0;
+    memset(v,0,sizeof(v));
+
+    for(int i=0;i&lt;n;i++)
+    {
+        int x;
+        double m=INF;
+        for(int y=0;y&lt;n;y++)
+        {
+            if(!v[y]&#38;&#38;d[y]+EPS&lt;m)
+            {
+                m=d[x=y];
+            }
+        }
+        v[x]=1;
+        for(int y=0;y&lt;n;y++)
+        {
+            d[y]=min(d[y],max(d[x],g[x][y]));
+        }
+    }
+    return d[1];
+}
+</pre>
+</ul>
+</body></html>

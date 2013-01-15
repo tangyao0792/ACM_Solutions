@@ -1,0 +1,107 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2452">2452</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 7600K</td><td width=10px></td><td><b>Time:</b> 2813MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;cmath&gt;
+
+
+
+
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=50010;
+
+int n;
+int stMax[MAXN][18],stMin[MAXN][18],l[MAXN];
+int maxrmq(int i,int j){return(l[i]&gt;l[j]?i:j);}
+int minrmq(int i,int j){return(l[i]&lt;l[j]?i:j);}
+
+void st()
+{
+    for(int i=1;i&lt;=n;i++)   stMax[i][0]=stMin[i][0]=i;
+
+    for(int j=1;(1&lt;&lt;j) &lt;= n; j++)
+    {
+        for(int i=1;i+(1&lt;&lt;(j-1))&lt;=n;i++)
+        {
+            stMax[i][j]=maxrmq(stMax[i][j-1],stMax[i+(1&lt;&lt;(j-1))][j-1]);
+            stMin[i][j]=minrmq(stMin[i][j-1],stMin[i+(1&lt;&lt;(j-1))][j-1]);
+        }
+    }
+}
+int getMax(int x, int y)
+{
+    int k=int(log(double (y-x+1))/log(2.0));
+
+    return maxrmq(stMax[x][k],stMax[1+y-(1&lt;&lt;k)][k]);
+}
+int getMin(int x, int y)
+{
+    int k=int(log(double (y-x+1))/log(2.0));
+
+    return minrmq(stMin[x][k],stMin[1+y-(1&lt;&lt;k)][k]);
+}
+
+int solve(int x)
+{
+    int left=x+1,right=n;
+    int mid;
+    while(left&lt;right)
+    {
+        mid=(left+right)&gt;&gt;1;
+        if(l[getMin(left,mid)]&gt;l[x])
+            left=mid+1;
+        else
+            right=mid-1;
+    }
+    return getMax(x,left);
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+    while(scanf(&#34;%d&#34;,&#38;n)==1)
+    {
+        for(int i=1;i&lt;=n;i++)
+        {
+            scanf(&#34;%d&#34;,&#38;l[i]);
+        }
+        st();
+        int nMax=0;
+//        for(int i=1;i&lt;=n;i++)
+//        {
+//            int right=getMax(i,n);
+//            int left=getMin(i,right);
+//                nMax=max(nMax,right-left);
+//        }
+//这么做不能保证最大区间一定被找到
+
+        for(int i=1;i&lt;=n;i++)
+        {
+            int tmp=solve(i)-i;
+            nMax=max(nMax,tmp);
+        }
+        if(nMax)
+            printf(&#34;%d\n&#34;,nMax);
+        else
+            printf(&#34;-1\n&#34;);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

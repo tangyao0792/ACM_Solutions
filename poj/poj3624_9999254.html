@@ -1,0 +1,49 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3624">3624</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 464K</td><td width=10px></td><td><b>Time:</b> 360MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+
+const int MAXM=13000;
+const int MAXN=3500;
+
+int dp[MAXM];
+int w[MAXN],c[MAXN];
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int n,m;
+    while(scanf(&#34;%d %d&#34;,&#38;n,&#38;m)==2)
+    {
+        memset(dp,0,sizeof(dp));
+        for(int i=0;i&lt;n;i++)
+            scanf(&#34;%d %d&#34;,&#38;c[i],&#38;w[i]);
+
+        for(int i=0;i&lt;n;i++)
+            for(int v=m;v&gt;=0;v--)
+            {
+                if(v&gt;=c[i])
+                    dp[v]=max(dp[v],dp[v-c[i]]+w[i]);
+            }
+        printf(&#34;%d\n&#34;,dp[m]);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

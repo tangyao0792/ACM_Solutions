@@ -1,0 +1,165 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3678">3678</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 19360K</td><td width=10px></td><td><b>Time:</b> 938MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=2200;
+const int MAXM=2200*2200;
+
+int low[MAXN],dfn[MAXN],ins[MAXN],s[MAXN],id[MAXN];
+int nscc,nIndex,sp;
+
+int u[MAXM],v[MAXM],next[MAXM];
+int first[MAXN],cnt;
+
+int g[MAXN][MAXN];
+
+int n,m;
+
+inline void addedge(int x,int y)
+{
+    if(g[x][y]) return;
+    g[x][y]=1;
+	u[cnt]=x;v[cnt]=y;
+	next[cnt]=first[x];
+	first[x]=cnt++;
+}
+
+bool tarjan(int u)
+{
+	dfn[u]=low[u]=nIndex++;
+	s[sp++]=u;
+	ins[u]=1;
+
+	for(int e=first[u];e!=-1;e=next[e])
+	{
+		int y=v[e];
+
+		if(!ins[y])
+		{
+			if(!tarjan(y))
+				return false;
+			low[u]=min(low[u],low[y]);
+		}
+		else
+		{
+			low[u]=min(low[u],dfn[y]);
+		}
+	}
+
+	if(dfn[u]==low[u])
+	{
+		nscc++;
+		while(1)
+		{
+			int t=s[--sp];
+			ins[t]=0;
+			id[t]=nscc;
+			if(id[t]==id[t^1])
+				return false;
+			if(t==u)
+				break;
+		}
+	}
+	return true;
+}
+
+bool solve()
+{
+	memset(dfn,0,sizeof(dfn));
+	memset(ins,0,sizeof(ins));
+	memset(id,0,sizeof(id));
+	sp=0;
+	nscc=0;
+	nIndex=1;
+
+	for(int i=0;i&lt;2*n;i++)
+	{
+		if(!dfn[i])
+		{
+			if(!tarjan(i))
+				return false;
+		}
+	}
+	return true;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	while(scanf(&#34;%d %d&#34;,&#38;n,&#38;m)==2)
+	{
+	    memset(g,0,sizeof(g));
+		memset(first,-1,sizeof(first));
+		cnt=0;
+
+		for(int i=0;i&lt;m;i++)
+		{
+			int a,b,c;
+			char s[22];
+			scanf(&#34;%d %d %d %s&#34;,&#38;a,&#38;b,&#38;c,s);
+			if(c==0)
+			{
+				if(s[0]==&#39;A&#39;)
+				{
+					addedge(2*a+1,2*b);
+					addedge(2*b+1,2*a);
+				}
+				else if(s[0]==&#39;O&#39;)
+				{
+					addedge(2*a+1,2*a);
+					addedge(2*b+1,2*b);
+				}
+				else
+				{
+					addedge(2*a+1,2*b+1);
+					addedge(2*b+1,2*a+1);
+					addedge(2*a,2*b);
+					addedge(2*b,2*a);
+				}
+			}
+			else
+			{
+				if(s[0]==&#39;A&#39;)
+				{
+					addedge(2*a,2*a+1);
+					addedge(2*b,2*b+1);
+				}
+				else if(s[0]==&#39;O&#39;)
+				{
+					addedge(2*a,2*b+1);
+					addedge(2*b,2*a+1);
+				}
+				else
+				{
+					addedge(2*a+1,2*b);
+					addedge(2*b+1,2*a);
+					addedge(2*a,2*b+1);
+					addedge(2*b,2*a+1);
+				}
+			}
+		}
+		if(solve())
+			puts(&#34;YES&#34;);
+		else
+			puts(&#34;NO&#34;);
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

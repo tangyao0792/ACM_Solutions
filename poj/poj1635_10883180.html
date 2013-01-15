@@ -1,0 +1,84 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1635">1635</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 656K</td><td width=10px></td><td><b>Time:</b> 547MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;iostream&gt;
+#include&lt;algorithm&gt;
+#include&lt;vector&gt;
+#include&lt;string&gt;
+using namespace std;
+
+string MinTreeRep(string tree)
+{
+    if(tree==&#34;01&#34;)
+        return tree;
+	tree=tree.substr(1,tree.size()-2);
+
+	vector&lt;string&gt; v;
+
+	int size=tree.size();
+	int last=0;
+	int tmp=0;
+	for(int i=0;i&lt;size;i++)
+	{
+		if(tree[i]==&#39;0&#39;)
+			tmp++;
+		if(tree[i]==&#39;1&#39;)
+			tmp--;
+		if(tmp==0)
+		{
+			v.push_back(MinTreeRep(tree.substr(last,i-last+1)));
+			last=i+1;
+		}
+	}
+	sort(v.begin(),v.end());
+	tree=&#34;&#34;;
+	size=v.size();
+	for(int i=0;i&lt;size;i++)
+        tree=tree+v[i];
+
+	return &#34;0&#34;+tree+&#34;1&#34;;
+}
+char str[3333];
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	string tree1,tree2;
+	int t;
+	scanf(&#34;%d\n&#34;,&#38;t);
+	while(t--)
+	{
+//		cin&gt;&gt;tree1&gt;&gt;tree2;
+        gets(str);
+        tree1=str;
+        tree1=&#34;0&#34;+tree1+&#34;1&#34;;
+
+		tree1=MinTreeRep(tree1);
+        gets(str);
+        tree2=str;
+		tree2=&#34;0&#34;+tree2+&#34;1&#34;;
+
+		tree2=MinTreeRep(tree2);
+		if(tree1==tree2)
+			puts(&#34;same&#34;);
+		else
+			puts(&#34;different&#34;);
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

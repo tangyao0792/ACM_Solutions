@@ -1,0 +1,92 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2240">2240</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 768K</td><td width=10px></td><td><b>Time:</b> 875MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;iostream&gt;
+#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;map&gt;
+
+using namespace std;
+
+const double EPS=1e-12;
+const int INF = 1&lt;&lt;28;
+double g[35][35];
+int n, m;
+map&lt;string,int&gt; mapm;
+
+bool Flyod();
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;last.txt&#34;, &#34;r&#34;, stdin);
+    //freopen(&#34;out.txt&#34;, &#34;w&#34;,stdout);
+#endif
+    int nCount=0;
+    while(scanf(&#34;%d&#34;,&#38;n) &gt;0 &#38;&#38; n)
+    {
+        nCount++;
+        for(int i=0;i&lt;35;i++)
+            for(int j=0;j&lt;35;j++)   g[i][j]=0;
+
+        mapm.clear();
+        for(int i=0;i&lt;n;i++)
+        {
+            g[i][i]=1;
+            string line;
+            cin&gt;&gt;line;
+            mapm[line]=i;
+        }
+        scanf(&#34;%d&#34;,&#38;m);
+        for(int i=0;i&lt;m;i++)
+        {
+            string a, b;
+            int x,y;
+            double w;
+            cin&gt;&gt;a&gt;&gt;w&gt;&gt;b;
+            x=mapm[a];
+            y=mapm[b];
+            g[x][y]=w;
+        }
+        if(Flyod()) printf(&#34;Case %d: Yes\n&#34;,nCount);
+        else    printf(&#34;Case %d: No\n&#34;,nCount);
+    }
+    return 0;
+}
+
+bool Flyod()
+{
+    for(int k=0;k&lt;n;k++)
+        for(int i=0;i&lt;n;i++)
+            for(int j=0;j&lt;n;j++)
+            {
+
+                if(g[i][j]&lt;g[i][k]*g[k][j])
+                    g[i][j]=g[i][k]*g[k][j];
+                if(i==j&#38;&#38;g[i][j]&gt;1) return true;
+            }
+    for(int k=0;k&lt;n;k++)
+        for(int i=0;i&lt;n;i++)
+            for(int j=0;j&lt;n;j++)
+                if(g[i][k]*g[k][j]-g[i][j]&gt;EPS)
+                    return true;
+
+//    for(int i=0;i&lt;n;i++)
+//        if(g[i][i]&gt;1)   return true;
+
+    return false;
+
+}
+</pre>
+</ul>
+</body></html>

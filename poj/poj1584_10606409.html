@@ -1,0 +1,138 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1584">1584</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 148K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include &lt;math.h&gt;
+#define eps 1e-8
+#define zero(x) (((x)&gt;0?(x):-(x))&lt;eps)
+
+const int MAXN=1111;
+
+struct point
+{
+	double x,y;
+	bool operator == (const point &#38;t)	const
+	{
+		return t.x==x &#38;&#38; t.y==y;
+	}
+    point operator +(const point t)const
+    {
+        point ans;
+        ans.x=x+t.x;
+        ans.y=y+t.y;
+        return ans;
+    }
+    point operator -(const point t)const
+    {
+        point ans;
+        ans.x=x-t.x;
+        ans.y=y-t.y;
+        return ans;
+    }
+}p[MAXN];
+struct line{point a,b;}l[MAXN];
+
+double xmult(point p1,point p2,point p0){
+return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+
+double distances(point p1,point p2){
+return sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
+}
+int same_side(point p1,point p2,point l1,point l2){
+return xmult(l1,p1,l2)*xmult(l1,p2,l2)&gt;eps;
+}
+int opposite_side(point p1,point p2,point l1,point l2){
+return xmult(l1,p1,l2)*xmult(l1,p2,l2)&lt;-eps;
+}
+double disptoline(point p,line l){
+return fabs(xmult(p,l.a,l.b))/distances(l.a,l.b);
+}
+
+int n;
+double radius,px,py;
+
+int solve()
+{
+	bool flag=true;
+	for(int i=0;i&lt;n &#38;&#38; flag;i++)
+	{
+		point p1,p2,p3,p4;
+		p1=l[i].a;p2=l[i].b;
+		for(int j=0;j&lt;n &#38;&#38; flag;j++)
+		{
+			p3=p[j];
+			if(p3==p1 || p3==p2)	continue;
+			for(int k=j+1;k&lt;n;k++)
+			{
+				p4=p[k];
+				if(p4==p1 || p4==p2 || p4==p3)
+					continue;
+
+				if(opposite_side(p3,p4,p1,p2))
+				{
+					flag=false;
+					break;
+				}
+			}
+		}
+	}
+	if(!flag)	return 1;
+	point peg;
+	peg.x=px;peg.y=py;
+
+	double direct=xmult(l[0].a-peg,l[0].b-l[0].a,peg-peg);
+	for(int i=1;i&lt;n;i++)
+	{
+	    if(xmult(l[i].a-peg,l[i].b-l[i].a,peg-peg)*direct&lt;-eps)
+            return 2;
+	}
+
+	for(int i=0;i&lt;n;i++)
+	{
+		double tmp=disptoline(peg,l[i]);
+		if(tmp+eps&lt;radius)
+			return 2;
+	}
+	return 0;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;pD1.in&#34;,&#34;r&#34;,stdin);
+	freopen(&#34;out.txt&#34;,&#34;w&#34;,stdout);
+#endif
+	while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n&gt;=3)
+	{
+		scanf(&#34;%lf %lf %lf&#34;,&#38;radius,&#38;px,&#38;py);
+		for(int i=0;i&lt;n;i++)
+			scanf(&#34;%lf %lf&#34;,&#38;p[i].x,&#38;p[i].y);
+		for(int i=0;i&lt;n;i++)
+		{
+			l[i].a=p[i];
+			l[i].b=p[(i+1+n)%n];
+		}
+		int ans=solve();
+		if(ans==1)
+			puts(&#34;HOLE IS ILL-FORMED&#34;);
+		else if(ans==2)
+			puts(&#34;PEG WILL NOT FIT&#34;);
+		else
+			puts(&#34;PEG WILL FIT&#34;);
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,127 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1041">1041</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 788K</td><td width=10px></td><td><b>Time:</b> 79MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;cstring&gt;
+#include&lt;algorithm&gt;
+
+using namespace std;
+
+const int MAXN=50 ,MAXM=4000;
+
+struct edge
+{
+    int u,v,w;
+}e[MAXM];
+
+int first[MAXN],next[MAXM],d[MAXN],v[MAXN];
+int cnt;
+int s[MAXM],sp,vis[MAXM];
+
+bool comp(edge a, edge b){return a.w&gt;b.w;}
+bool judge()
+{
+    for(int i=0;i&lt;MAXN;i++)
+        if(v[i]&#38;&#38;d[i]%2!=0)
+            return false;
+
+    return true;
+}
+
+void Euler(int u)
+{
+    for(int x=first[e[u].v];x!=-1;x=next[x])
+    {
+        if(!vis[e[x].w])
+        {
+            vis[e[x].w]=1;
+            Euler(x);
+            s[sp++]=x;
+        }
+    }
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int x,y,z;
+    while(scanf(&#34;%d %d&#34;,&#38;x,&#38;y)==2 &#38;&#38; x&#38;&#38;y)
+    {
+        scanf(&#34;%d&#34;,&#38;z);
+        memset(d,0,sizeof(d));
+        memset(v,0,sizeof(v));
+        int start=min(x,y);
+        cnt=0;
+        e[cnt].u=x;
+        e[cnt].v=y;
+        e[cnt].w=z;
+        cnt++;
+        e[cnt].v=x;
+        e[cnt].u=y;
+        e[cnt].w=z;
+        cnt++;
+        v[x]=v[y]=1;
+        d[x]++;
+        d[y]++;
+        while(scanf(&#34;%d %d&#34;,&#38;x,&#38;y)==2 &#38;&#38; x&#38;&#38;y)
+        {
+            scanf(&#34;%d&#34;,&#38;z);
+            e[cnt].u=x;
+            e[cnt].v=y;
+            e[cnt].w=z;
+            cnt++;
+            e[cnt].v=x;
+            e[cnt].u=y;
+            e[cnt].w=z;
+            cnt++;
+            v[x]=v[y]=1;
+            d[x]++;
+            d[y]++;
+        }
+        if(!judge())
+            printf(&#34;Round trip does not exist.\n&#34;);
+        else
+        {
+            sort(e,e+cnt,comp);
+            memset(first,-1,sizeof(first));
+            memset(next,-1,sizeof(next));
+            for(int i=0;i&lt;cnt;i++)
+            {
+                next[i]=first[e[i].u];
+                first[e[i].u]=i;
+            }
+            memset(vis,0,sizeof(vis));
+            sp=0;
+            for(int x=first[start];x!=-1;x=next[x])
+            {
+                if(!vis[e[x].w])
+                {
+                    vis[e[x].w]=1;
+                    Euler(x);
+                    s[sp++]=x;
+                }
+            }
+           // printf(&#34;%d&#34;,e[s[sp-1]].w);
+            for(int i=sp-1;i&gt;=0;i--)
+                printf(&#34;%d &#34;,e[s[i]].w);
+            printf(&#34;\n&#34;);
+        }
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

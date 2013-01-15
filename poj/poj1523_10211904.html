@@ -1,0 +1,114 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1523">1523</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 180K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;cstring&gt;
+#include&lt;vector&gt;
+
+using namespace std;
+
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=1001;
+
+vector&lt;int&gt; adj[MAXN];
+int dfn[MAXN],low[MAXN],vis[MAXN],num[MAXN];
+int n,m,nIndex;
+
+void tarjan(int u,int r, int fa)
+{
+    dfn[u]=low[u]=nIndex++;
+    vis[u]=1;
+    int t=adj[u].size();
+    int son=0;
+    for(int i=0;i&lt;t;i++)
+    {
+        int v=adj[u][i];
+        if(v==fa)   continue;
+
+        if(vis[v]==0)
+        {
+            son++;
+            tarjan(v,r,u);
+            low[u]=min(low[u],low[v]);
+            if((u==r &#38;&#38; son&gt;1) || (dfn[u]&lt;=low[v] &#38;&#38; u!=r))
+            {
+                num[u]++;
+            }
+        }
+        else if(vis[v]==1)
+            low[u]=min(low[u],dfn[v]);
+    }
+   // vis[u]=2;
+}
+
+void solve()
+{
+    memset(vis,0,sizeof(vis));
+    memset(num,0,sizeof(num));
+    nIndex=1;
+
+    int cnt=0;
+    for(int i=1;i&lt;=n;i++)
+        if(!vis[i])
+        {
+            cnt++;
+            tarjan(i,i,-1);
+        }
+    int f=0;
+    for(int i=1;i&lt;=n;i++)
+        if(num[i]&gt;0)
+        {
+            f++;
+            printf(&#34;  SPF node %d leaves %d subnets\n&#34;,i,num[i]+cnt);
+        }
+    if(!f)
+        printf(&#34;  No SPF nodes\n&#34;);
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int nCase=0;
+    while(true)
+    {
+        if(nCase)   printf(&#34;\n&#34;);
+        for(int i=0;i&lt;MAXN;i++)
+            adj[i].clear();
+
+        nCase++;
+        int x,y;
+        n=0;
+        m=0;
+        while(scanf(&#34;%d&#34;,&#38;x)==1 &#38;&#38; x)
+        {
+            m++;
+            scanf(&#34;%d&#34;,&#38;y);
+            n=max(n,max(x,y));
+            adj[x].push_back(y);
+            adj[y].push_back(x);
+        }
+        if(m==0)    break;
+        printf(&#34;Network #%d\n&#34;,nCase);
+        solve();
+
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

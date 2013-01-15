@@ -1,0 +1,86 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1195">1195</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 4384K</td><td width=10px></td><td><b>Time:</b> 594MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int MAXN=1050;
+
+int treeArray[MAXN][MAXN];
+int n;
+
+inline int lowbit(int x)
+{
+    return x&#38;(x^(x-1));
+}
+
+void add(int x,int y,int a)
+{
+    for(int i=x;i&lt;=n;i+=lowbit(i))
+    {
+        for(int j=y;j&lt;=n;j+=lowbit(j))
+        {
+            treeArray[i][j]+=a;
+        }
+    }
+}
+
+int getsum(int x,int y)
+{
+    int ans=0;
+    for(int i=x;i&gt;0;i-=lowbit(i))
+    {
+        for(int j=y;j&gt;0;j-=lowbit(j))
+        {
+            ans+=treeArray[i][j];
+        }
+    }
+    return ans;
+}
+
+int query(int l,int b,int r,int t)
+{
+    return getsum(r,t)+getsum(l-1,b-1)-getsum(r,b-1)-getsum(l-1,t);
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;,stdin);
+#endif
+
+    int ins;
+    while(scanf(&#34;%d&#34;,&#38;ins)==1 &#38;&#38; ins!=3)
+    {
+        if(ins==0)
+            scanf(&#34;%d&#34;,&#38;n);
+        else if(ins==1)
+        {
+            int x,y,a;
+            scanf(&#34;%d %d %d&#34;,&#38;x,&#38;y,&#38;a);
+            x++;y++;
+            add(x,y,a);
+        }
+        else
+        {
+            int l,b,r,t;
+            scanf(&#34;%d %d %d %d&#34;,&#38;l,&#38;b,&#38;r,&#38;t);
+            printf(&#34;%d\n&#34;,query(l+1,b+1,r+1,t+1));
+        }
+    }
+
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

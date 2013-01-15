@@ -1,0 +1,70 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2082">2082</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 1172K</td><td width=10px></td><td><b>Time:</b> 125MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#define max(a,b) (a&gt;b?a:b)
+
+const int MAXN=50100;
+
+int n;
+int w[MAXN],h[MAXN];
+int left[MAXN],right[MAXN];
+int stk[MAXN][2],sp;
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n!=-1)
+	{
+		for(int i=0;i&lt;n;i++)
+			scanf(&#34;%d %d&#34;,&#38;w[i],&#38;h[i]);
+
+		sp=0;
+		for(int i=0;i&lt;n;i++)
+		{
+			left[i]=w[i];
+			while(sp &#38;&#38; stk[sp-1][0]&gt;=h[i])
+			{
+				sp--;
+				left[i]+=stk[sp][1];
+			}
+			stk[sp][0]=h[i];
+			stk[sp++][1]=left[i];
+		}
+		sp=0;
+		for(int i=n-1;i&gt;=0;i--)
+		{
+			right[i]=w[i];
+			while(sp &#38;&#38; stk[sp-1][0]&gt;=h[i])
+			{
+				sp--;
+				right[i]+=stk[sp][1];
+			}
+			stk[sp][0]=h[i];
+			stk[sp++][1]=right[i];
+		}
+		int ans=0;
+		int s;
+		for(int i=0;i&lt;n;i++)
+		{
+			s=h[i]*(left[i]+right[i]-w[i]);
+			ans=max(s,ans);
+		}
+		printf(&#34;%d\n&#34;,ans);
+	}
+	return 0;
+}</pre>
+</ul>
+</body></html>

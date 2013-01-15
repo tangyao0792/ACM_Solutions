@@ -1,0 +1,95 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3211">3211</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 1204K</td><td width=10px></td><td><b>Time:</b> 47MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;iostream&gt;
+#include&lt;map&gt;
+#include&lt;vector&gt;
+
+using namespace std;
+
+const int INF=1&lt;&lt;28;
+const int MAXM=15;
+const int MAXN=110;
+const int MAXT=1010;
+
+int n,m;
+vector&lt;int&gt; v[MAXM];
+int dp[MAXT*MAXN];
+int w[MAXN];
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+
+    map&lt;string,int&gt; color;
+
+    while(cin&gt;&gt;m&gt;&gt;n)
+    {
+        if(!n &#38;&#38; !m)    break;
+        color.clear();
+        string a;
+        for(int i=1;i&lt;=m;i++)
+        {
+            cin&gt;&gt;a;
+            color[a]=i;
+            v[i].clear();
+        }
+        for(int i=0;i&lt;n;i++)
+        {
+            int t;
+            cin&gt;&gt;t&gt;&gt;a;
+            int p=color[a];
+            v[p].push_back(t);
+        }
+
+        int ans=0;
+        for(int i=1;i&lt;=m;i++)
+        {
+            int s=v[i].size();
+
+            if(!s)  continue;
+
+            int V=0;
+            for(int j=1;j&lt;=s;j++)
+            {
+                w[j]=v[i][j-1];
+                V+=w[j];
+            }
+
+            memset(dp,0,sizeof(dp));
+            dp[0]=1;
+
+            for(int j=1;j&lt;=s;j++)
+                for(int k=V;k&gt;=w[j];k--)
+                    if(dp[k-w[j]])
+                        dp[k]=1;
+
+            int nMin=INF;
+            for(int j=0;j&lt;=V;j++)
+                if(dp[j])
+                    nMin=min(nMin,max(j,V-j));
+
+            ans+=nMin;
+        }
+        cout&lt;&lt;ans&lt;&lt;endl;
+    }
+
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

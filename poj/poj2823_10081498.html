@@ -1,0 +1,75 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2823">2823</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 6056K</td><td width=10px></td><td><b>Time:</b> 6563MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int MAXN=1000010;
+
+struct node
+{
+    int p,v;
+}q[MAXN];     //qa单调递增队列，qb递减
+
+int a[MAXN];
+int f,b;            //指针
+int n,m;
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;,stdin);
+#endif
+
+    scanf(&#34;%d %d&#34;,&#38;n,&#38;m);
+
+
+
+    for(int i=0;i&lt;n;i++)
+        scanf(&#34;%d&#34;,&#38;a[i]);
+
+    f=0;b=-1;
+    for(int i=0;i&lt;n;i++)
+    {
+        while(q[b].v&gt;a[i] &#38;&#38; b&gt;f-1)b--;
+        b++;
+        q[b].v=a[i];q[b].p=i;
+        if(i&gt;=m-1)
+        {
+            while(q[f].p&lt;i-m+1)f++;
+            if(i!=m-1)  printf(&#34; &#34;);
+            printf(&#34;%d&#34;,q[f].v);
+        }
+    }
+
+    printf(&#34;\n&#34;);
+
+    f=0;b=-1;
+    for(int i=0;i&lt;n;i++)
+    {
+        while(q[b].v&lt;a[i] &#38;&#38; b&gt;f-1)b--;
+        b++;
+        q[b].v=a[i];q[b].p=i;
+        if(i&gt;=m-1)
+        {
+            while(q[f].p&lt;i-m+1)f++;
+            if(i!=m-1)  printf(&#34; &#34;);
+            printf(&#34;%d&#34;,q[f].v);
+        }
+    }
+
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

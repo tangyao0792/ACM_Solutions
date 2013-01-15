@@ -1,0 +1,113 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1386">1386</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 684K</td><td width=10px></td><td><b>Time:</b> 360MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;cstring&gt;
+
+using namespace std;
+
+int n;
+int p[26],in[26];
+bool v[26];
+char tmp[1010];
+
+int find(int x){return p[x]==-1?x:(p[x]=find(p[x]));}
+
+bool judge()
+{
+    int k;
+    for(k=0;k&lt;26;k++)   if(v[k])break;
+
+    k=find(k);
+
+    for(int i=0;i&lt;26;i++)
+        if(v[i]&#38;&#38;k!=find(i))
+            return false;
+    bool allZero=true;
+    for(int i=0;i&lt;26;i++)
+        if(v[i]&#38;&#38;in[i]!=0)
+        {
+            allZero=false;
+            break;
+        }
+    if(allZero) return true;
+
+    bool b1=false,b2=false;
+    for(int i=0;i&lt;26;i++)if(v[i])
+    {
+        if(in[i]==-1)
+        {
+            if(b1)
+                return false;
+            else
+                b1=true;
+        }
+        else if(in[i]==1)
+        {
+            if(b2)
+                return false;
+            else
+                b2=true;
+        }
+        else if(in[i]==0)
+        {
+
+        }
+        else
+            return false;
+    }
+    if(b1&#38;&#38;b2)  return true;
+    return false;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int nCase;
+    scanf(&#34;%d&#34;, &#38;nCase);
+    while(nCase--)
+    {
+        memset(v,false,sizeof(v));
+        memset(p,-1,sizeof(p));
+        memset(in,0,sizeof(in));
+        scanf(&#34;%d&#34;,&#38;n);
+        for(int i=0;i&lt;n;i++)
+        {
+            scanf(&#34;%s&#34;,tmp);
+            int nLen=strlen(tmp);
+            int f=tmp[0]-&#39;a&#39;;
+            int l=tmp[nLen-1]-&#39;a&#39;;
+
+            v[f]=true;
+            v[l]=true;
+            in[f]--;
+            in[l]++;
+
+            int x=find(f);
+            int y=find(l);
+            if(x!=y)
+                p[x]=y;
+        }
+        if(judge())
+            printf(&#34;Ordering is possible.\n&#34;);
+        else
+            printf(&#34;The door cannot be opened.\n&#34;);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

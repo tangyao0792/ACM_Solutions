@@ -1,0 +1,178 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2074">2074</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 684K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;iostream&gt;
+#include&lt;algorithm&gt;
+#include&lt;cmath&gt;
+
+using namespace std;
+
+#define eps 1e-8
+#define zero(x) (((x)&gt;0?(x):-(x))&lt;eps)
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=1111;
+const long long INF=(1ll)&lt;&lt;30;
+
+struct point{double x,y;};
+struct line{point a,b;}l[MAXN],shadow[MAXN],pl,house;
+
+double xmult(point p1,point p2,point p0){
+return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+int dots_inline(point p1,point p2,point p3){
+return zero(xmult(p1,p2,p3));
+}
+int dot_online_in(point p,line l){
+return zero(xmult(p,l.a,l.b))&#38;&#38;(l.a.x-p.x)*(l.b.x-p.x)&lt;eps&#38;&#38;(l.a.y-p.y)*(l.b.y-p.y)&lt;eps;
+}
+int same_side(point p1,point p2,line l){
+return xmult(l.a,p1,l.b)*xmult(l.a,p2,l.b)&gt;eps;
+}
+int intersect_in(line u,line v){
+if (!dots_inline(u.a,u.b,v.a)||!dots_inline(u.a,u.b,v.b))
+return !same_side(u.a,u.b,v)&#38;&#38;!same_side(v.a,v.b,u);
+return dot_online_in(u.a,v)||dot_online_in(u.b,v)||dot_online_in(v.a,u)||dot_online_in(v.b,u);
+}
+point intersection(line u,line v){
+point ret=u.a;
+double t=((u.a.x-v.a.x)*(v.a.y-v.b.y)-(u.a.y-v.a.y)*(v.a.x-v.b.x))
+/((u.a.x-u.b.x)*(v.a.y-v.b.y)-(u.a.y-u.b.y)*(v.a.x-v.b.x));
+ret.x+=(u.b.x-u.a.x)*t;
+ret.y+=(u.b.y-u.a.y)*t;
+return ret;
+}
+
+int n;
+
+void swap(double &#38;a,double &#38;b)
+{
+	if(a&gt;b)
+	{
+		double tmp=a;
+		a=b;
+		b=tmp;
+	}
+}
+
+line getline(point p1,point p2)
+{
+	line tmp;
+	if(p1.x==p2.x)
+	{
+		tmp.a.x=tmp.b.x=p1.x;
+		tmp.a.y=-INF;
+		tmp.b.y=INF;
+		return tmp;
+	}
+	double k=(p1.y-p2.y)/(p1.x-p2.x);
+	tmp.a.x=-INF;
+	tmp.a.y=k*(-INF-p1.x)+p1.y;
+	tmp.b.x=INF;
+	tmp.b.y=k*(INF-p1.x)+p1.y;
+
+	return tmp;
+}
+bool comp(line a,line b)
+{
+	return a.a.x+eps&lt;b.a.x;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+   // freopen(&#34;out.txt&#34;,&#34;w&#34;,stdout);
+#endif
+	double x1,x2,y;
+	while(scanf(&#34;%lf %lf %lf&#34;,&#38;x1,&#38;x2,&#38;y)==3)
+	{
+		if(x1==0 &#38;&#38; x2==0 &#38;&#38; y==0)break;
+		swap(x1,x2);
+		house.a.x=x1;house.b.x=x2;
+		house.a.y=house.b.y=y;
+
+		scanf(&#34;%lf %lf %lf&#34;,&#38;x1,&#38;x2,&#38;y);
+		swap(x1,x2);
+		pl.a.x=x1;pl.b.x=x2;pl.a.y=pl.b.y=y;
+
+		scanf(&#34;%d&#34;,&#38;n);
+
+		for(int i=0;i&lt;n;i++)
+		{
+			scanf(&#34;%lf %lf %lf&#34;,&#38;x1,&#38;x2,&#38;y);
+			swap(x1,x2);
+			if(y&gt;house.a.y+eps || y+eps&lt;pl.a.y || y==house.a.y || y==pl.a.y)
+			{
+				i--;
+				n--;
+				continue;
+			}
+			l[i].a.x=x1;l[i].b.x=x2;
+			l[i].a.y=l[i].b.y=y;
+		}
+        line pll=getline(pl.a,pl.b);
+		for(int i=0;i&lt;n;i++)
+		{
+			line tmp=getline(house.a,l[i].b);
+			point ip;
+
+            ip=intersection(tmp,pll);
+            shadow[i].b=ip;
+
+			tmp=getline(house.b,l[i].a);
+
+            ip=intersection(tmp,pll);
+            shadow[i].a=ip;
+
+			if((shadow[i].a.x+eps&lt;pl.a.x &#38;&#38; shadow[i].b.x+eps&lt;pl.a.x) ||
+      (shadow[i].a.x&gt;pl.b.x+eps &#38;&#38; shadow[i].b.x&gt;pl.b.x+eps))
+			{
+			    i--;
+			    n--;
+			    continue;
+			}
+			shadow[i].a.x=max(shadow[i].a.x,pl.a.x);
+			shadow[i].b.x=min(shadow[i].b.x,pl.b.x);
+		}
+
+        if(n==0)
+        {
+            printf(&#34;%.2f\n&#34;,pl.b.x-pl.a.x+eps);
+            continue;
+        }
+
+		sort(shadow,shadow+n,comp);
+		double ans=-1;
+		ans=max(ans,shadow[0].a.x-pl.a.x);
+		ans=max(ans,pl.b.x-shadow[n-1].b.x);
+		double maxright=pl.a.x;
+		for(int i=0;i&lt;n-1;i++)
+		{
+		    maxright=max(maxright,shadow[i].b.x);
+			double r=shadow[i+1].a.x;
+            ans=max(ans,r-maxright);
+		}
+		if(ans&lt;eps)
+			puts(&#34;No View&#34;);
+		else
+			printf(&#34;%.2f\n&#34;,ans+eps);
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

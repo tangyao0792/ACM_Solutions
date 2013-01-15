@@ -1,0 +1,171 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3728">3728</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 7648K</td><td width=10px></td><td><b>Time:</b> 891MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=50010;
+const int MAXM=2*MAXN;
+
+struct edge
+{
+    int u,v,next;
+}e[MAXM];
+struct quest
+{
+    int u,v,id,next,ans;
+}que[MAXM];
+struct newquest
+{
+    int p,next;
+}nq[MAXM];
+
+int mx[MAXN],mn[MAXN],up[MAXN],dw[MAXN];
+int fe[MAXN],fq[MAXN],fnq[MAXN];
+int ans[MAXM],p[MAXN],vis[MAXN];
+int n,q,cnte,cntq,cntnq;
+
+void addq(int x,int y, int p)
+{
+    que[cntq].ans=p;
+    que[cntq].u=x;que[cntq].v=y;
+    que[cntq].id=1;
+    que[cntq].next=fq[x];
+    fq[x]=cntq++;
+    que[cntq].ans=p;
+    que[cntq].u=y;que[cntq].v=x;
+    que[cntq].id=-1;
+    que[cntq].next=fq[y];
+    fq[y]=cntq++;
+}
+void addedge(int x, int y)
+{
+    e[cnte].u=x;e[cnte].v=y;
+    e[cnte].next=fe[x];
+    fe[x]=cnte++;
+    e[cnte].v=x;e[cnte].u=y;
+    e[cnte].next=fe[y];
+    fe[y]=cnte++;
+}
+
+void addnq(int x, int p)
+{
+    nq[cntnq].p=p;
+    nq[cntnq].next=fnq[x];
+    fnq[x]=cntnq++;
+}
+
+void swap(int &#38;x,int &#38;y)
+{
+    int tmp=x;
+    x=y;
+    y=tmp;
+}
+
+int find(int x)
+{
+    if(p[x]==x) return x;
+    int y=p[x];
+    p[x]=find(p[x]);
+    up[x]=max(mx[y]-mn[x],max(up[x],up[y]));
+    dw[x]=max(mx[x]-mn[y],max(dw[x],dw[y]));
+    mx[x]=max(mx[x],mx[y]);
+    mn[x]=min(mn[x],mn[y]);
+    return p[x];
+}
+
+void unionp(int x,int y)
+{
+    int px=find(x);
+    int py=find(y);
+    p[px]=py;
+}
+
+void lca(int par, int fa)
+{
+vis[par]=1;
+    p[par]=par;
+
+
+    for(int i=fe[par];i!=-1;i=e[i].next)
+    {
+        int y=e[i].v;
+        if(y==fa)   continue;
+        lca(y,par);
+        unionp(y,par);
+    }
+
+    for(int i=fq[par];i!=-1;i=que[i].next)
+    {
+        int v=que[i].v;
+        if(vis[v])
+        {
+            addnq(find(v),i);
+        }
+    }
+    for(int i=fnq[par];i!=-1;i=nq[i].next)
+    {
+        int pe=nq[i].p;
+        int from=que[pe].u;
+        int to=que[pe].v;
+        find(from);
+        find(to);
+        if(que[pe].id ==-1)
+            swap(from,to);
+        ans[que[pe].ans]=max(mx[to]-mn[from],max(up[from],dw[to]));
+    }
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    scanf(&#34;%d&#34;,&#38;n);
+    {
+        memset(fe,-1,sizeof(fe));
+        memset(fq,-1,sizeof(fq));
+        memset(fnq,-1,sizeof(fnq));
+        memset(vis,0,sizeof(vis));
+        cnte=cntq=cntnq=0;
+        for(int i=1;i&lt;=n;i++)
+        {
+            int tmp;scanf(&#34;%d&#34;,&#38;tmp);
+            mx[i]=mn[i]=tmp;
+            up[i]=dw[i]=0;
+        }
+        for(int i=1;i&lt;n;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            addedge(x,y);
+        }
+        scanf(&#34;%d&#34;,&#38;q);
+        for(int i=0;i&lt;q;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            addq(x,y,i);
+        }
+        lca(1,-1);
+        for(int i=0;i&lt;q;i++)
+            printf(&#34;%d\n&#34;,ans[i]);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

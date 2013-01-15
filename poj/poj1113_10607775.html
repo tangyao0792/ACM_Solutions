@@ -1,0 +1,93 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1113">1113</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 596K</td><td width=10px></td><td><b>Time:</b> 32MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include &lt;math.h&gt;
+#include&lt;cstdlib&gt;
+
+#define eps 1e-8
+#define zero(x) (((x)&gt;0?(x):-(x))&lt;eps)
+
+const int MAXN=1010;
+const double pi=3.1415926;
+
+int n;
+double l;
+
+struct point{double x,y;}p[MAXN],convex[MAXN];
+
+
+//¼ÆËã cross product (P1-P0)x(P2-P0)
+double xmult(point p1,point p2,point p0){
+	return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+double distances(point p1,point p2){
+return sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
+}
+point p1,p2;
+
+int graham_cp(const void* a,const void* b)
+{
+	double ret=xmult(*((point*)a),*((point*)b),p1);
+	return zero(ret)?(xmult(*((point*)a),*((point*)b),p2)&gt;0?1:-1):(ret&gt;0?1:-1);
+}
+void _graham(int n,point* p,int&#38; s,point* ch)
+{
+	int i,k=0;
+	for (p1=p2=p[0],i=1;i&lt;n;p2.x+=p[i].x,p2.y+=p[i].y,i++)
+		if (p1.y-p[i].y&gt;eps||(zero(p1.y-p[i].y)&#38;&#38;p1.x&gt;p[i].x))
+			p1=p[k=i];
+	p2.x/=n,p2.y/=n;
+	p[k]=p[0],p[0]=p1;
+	qsort(p+1,n-1,sizeof(point),graham_cp);
+	for (ch[0]=p[0],ch[1]=p[1],ch[2]=p[2],s=i=3;i&lt;n;ch[s++]=p[i++])
+		for (;s&gt;2&#38;&#38;xmult(ch[s-2],p[i],ch[s-1])&lt;-eps;s--);
+}
+int graham(int n,point* p,point* convex,int maxsize=1,int dir=1){
+	point* temp=new point[n];
+	int s,i;
+	_graham(n,p,s,temp);
+	for (convex[0]=temp[0],n=1,i=(dir?1:(s-1));dir?(i&lt;s):i;i+=(dir?1:-1))
+		if (maxsize||!zero(xmult(temp[i-1],temp[i],temp[(i+1)%s])))
+			convex[n++]=temp[i];
+	delete []temp;
+	return n;
+}
+
+
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	while(scanf(&#34;%d %lf&#34;,&#38;n,&#38;l)==2)
+	{
+		for(int i=0;i&lt;n;i++)
+		{
+			scanf(&#34;%lf %lf&#34;,&#38;p[i].x,&#38;p[i].y);
+		}
+		int num=graham(n,p,convex);
+		double ans=0;
+		for(int i=0;i&lt;num;i++)
+		{
+			ans+=distances(convex[i],convex[(i+1+num)%num]);
+		}
+		ans+=pi*2*l;
+		printf(&#34;%.f\n&#34;,ans);
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

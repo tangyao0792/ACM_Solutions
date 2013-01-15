@@ -1,0 +1,74 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2182">2182</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 612K</td><td width=10px></td><td><b>Time:</b> 110MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int MAXN=8010;
+
+int order[MAXN],s[MAXN],sp;
+int n;
+struct TNode
+{
+    int left,right,n;
+}T[2*MAXN];
+
+void build(int s,int t,int step)
+{
+    T[step].left=s;
+    T[step].right=t;
+    T[step].n=t-s+1;
+
+    if(s==t)    return;
+
+    int mid=(s+t)/2;
+    build(s,mid,step*2);
+    build(mid+1,t,step*2+1);
+}
+
+int find(int step,int target)
+{
+    T[step].n--;
+
+    if(T[step].left==T[step].right)
+        return T[step].right;
+    else if(T[step*2].n&gt;=target)
+        return find(step*2,target);
+    else
+        return find(step*2+1,target-T[step*2].n);
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    while(scanf(&#34;%d&#34;,&#38;n)==1)
+    {
+        order[1]=0;
+        for(int i=2;i&lt;=n;i++)
+            scanf(&#34;%d&#34;,&#38;order[i]);
+
+        build(1,n,1);
+        sp=0;
+        for(int i=n;i&gt;=1;i--)
+            s[sp++]=find(1,order[i]+1);
+
+        for(int i=sp-1;i&gt;=0;i--)
+            printf(&#34;%d\n&#34;,s[i]);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,147 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3207">3207</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 4188K</td><td width=10px></td><td><b>Time:</b> 47MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define min(a,b) (a&lt;b?a:b)
+#define max(a,b) (a&gt;b?a:b)
+
+const int MAXN=1011;
+const int MAXM=505;
+
+struct Line
+{
+	int x,y;
+}l[MAXM];
+
+int g[MAXM*2][MAXM*2];
+int n,m;
+
+inline bool intersect(int i,int j)
+{
+    if(l[i].x&gt;l[j].y || l[j].x&gt;l[i].y)
+        return false;
+    if(l[i].y&gt;l[j].y &#38;&#38; l[i].x&lt;l[j].x)
+        return false;
+    if(l[j].y&gt;l[i].y &#38;&#38; l[j].x&lt;l[i].x)
+        return false;
+    return true;
+}
+
+int dfn[MAXN],low[MAXN],s[MAXN],nscc,nIndex,sp;
+int ins[MAXN];
+int id[MAXN];
+
+bool tarjan(int u)
+{
+	dfn[u]=low[u]=nIndex++;
+	s[sp++]=u;
+	ins[u]=1;
+
+	for(int i=0;i&lt;n;i++)
+	{
+		if(g[u][i])
+		{
+			if(!ins[i])
+			{
+				if(!tarjan(i))
+					return false;
+				low[u]=min(low[u],low[i]);
+			}
+			else
+			{
+				low[u]=min(low[u],dfn[i]);
+			}
+		}
+	}
+	if(dfn[u]==low[u])
+	{
+		nscc++;
+		while(true)
+		{
+			int t=s[--sp];
+			ins[t]=0;
+			id[t]=nscc;
+			if(id[t]==id[t^1])
+				return false;
+			if(t==u)
+				break;
+		}
+	}
+
+	return true;
+}
+
+bool solve()
+{
+	memset(dfn,0,sizeof(dfn));
+	memset(ins,0,sizeof(ins));
+	memset(id,0,sizeof(id));
+	nIndex=1;
+	nscc=0;
+	sp=1;
+
+	for(int i=0;i&lt;n;i++)
+		if(!dfn[i])
+		{
+			if(!tarjan(i))
+				return false;
+		}
+	return true;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	scanf(&#34;%d %d&#34;,&#38;n,&#38;m);
+	n=2*m;
+
+	for(int i=0;i&lt;m;i++)
+	{
+		int a,b;
+		scanf(&#34;%d %d&#34;,&#38;a,&#38;b);
+		l[i].x=min(a,b);
+		l[i].y=max(a,b);
+	}
+
+	memset(g,0,sizeof(g));
+
+	for(int i=0;i&lt;m;i++)
+	{
+		for(int j=i+1;j&lt;m;j++)
+		{
+			if(intersect(i,j))
+			{
+				g[i*2][j*2+1]=1;
+				g[j*2][i*2+1]=1;
+				g[i*2+1][j*2]=1;
+				g[j*2+1][i*2]=1;
+//				printf(&#34;%d  -&gt;  %d\n&#34;,i*2,j*2+1);
+//				printf(&#34;%d  -&gt;  %d\n&#34;,j*2,i*2+1);
+			}
+		}
+	}
+
+	if(solve())
+		puts(&#34;panda is telling the truth...&#34;);
+	else
+		puts(&#34;the evil panda is lying again&#34;);
+
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,59 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_c.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1247">1247</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 164K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_c" style="font-family:Courier New,Courier,monospace">#include&lt;stdio.h&gt;
+
+void main()
+{
+	int n;
+	int sam, ella;
+	int pos[30];
+	int i, j;
+	scanf(&#34;%d&#34;, &#38;n);
+	while(n != 0)
+	{
+		for( i = 0; i &lt; n; i++)
+		{
+			scanf(&#34;%d&#34;, pos + i);
+		}
+		sam = 0;
+		ella = 0;
+		for(i = 0; i &lt; n; i++)
+		{
+			for(j = 0; j &lt; i+1; j++)
+			{
+				sam += pos[j];
+			}
+			for(j = i+1; j &lt; n; j++)
+			{
+				ella += pos[j];
+			}
+
+			if( sam == ella)
+			{
+				printf(&#34;Sam stops at position %d and Ella stops at position %d.\n&#34;, i+1, i+2);
+				break;
+			}
+			sam = 0;
+			ella = 0;
+		}
+		if( i == n)
+		{
+			printf(&#34;No equal partitioning.\n&#34;);
+		}
+		scanf(&#34;%d&#34;, &#38;n);
+
+	}
+}</pre>
+</ul>
+</body></html>

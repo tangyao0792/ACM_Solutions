@@ -1,0 +1,35 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_c.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1003">1003</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 164K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_c" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+void main()
+{
+	int count;
+	double dest,sum;
+	while( scanf(&#34;%lf&#34; ,&#38;dest) != EOF)
+	{
+		count = 0;
+		sum = 0;
+		while(sum &lt; dest)
+		{
+			count++;
+			sum += 1.0/(count+1);
+			if( sum &gt; dest )
+			{
+				printf(&#34;%d card(s)\n&#34;,count);
+			}
+		}
+	}
+}</pre>
+</ul>
+</body></html>

@@ -1,0 +1,77 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_c.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1007">1007</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 128K</td><td width=10px></td><td><b>Time:</b> 94MS</td></tr>
+<tr><td><b>Language:</b> C</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_c" style="font-family:Courier New,Courier,monospace">#include&lt;stdio.h&gt;
+#include&lt;string.h&gt;
+
+int inversion(char[]);
+
+void main()
+{
+	char dna[100][51];
+	char temp[51];
+	int n, m;
+	int i, j, k;
+	scanf(&#34;%d %d&#34;, &#38;n, &#38;m);
+	for(i = 0; i&lt; m; i++)
+	{
+		scanf(&#34;%s&#34;,temp);
+		if(i == 0)
+		{
+			strcpy(dna[i],temp);
+		}
+		else
+		{
+			for(j =i-1 ; j &gt; -1; j--)
+			{
+				if( inversion(temp) &gt; inversion(dna[j]))
+				{
+					break;
+				}
+			}
+			
+			for(k = i; k &gt; j ; k--)
+			{
+				strcpy(dna[k], dna[k-1]);
+			}
+			strcpy(dna[j+1],temp);
+		}		
+	}	
+
+	for(i = 0; i &lt; m; i++)
+	{
+		printf(&#34;%s\n&#34;, dna[i]);
+	}
+	
+}
+
+int inversion(char str[])
+{
+	int length = strlen( str);
+	int count = 0;
+	int i, j;
+	for(i =0; i &lt; length; i++)
+	{
+		for(j =i+1; j &lt; length; j++)
+		{
+			if(str[j] &lt; str[i])
+			{
+				count++;
+			}
+		}
+	}
+
+	return count;
+}</pre>
+</ul>
+</body></html>

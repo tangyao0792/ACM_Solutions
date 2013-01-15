@@ -1,0 +1,131 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3321">3321</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 8876K</td><td width=10px></td><td><b>Time:</b> 750MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;iostream&gt;
+
+using namespace std;
+
+const int MAXN=100100;
+const int MAXM=2*MAXN;
+
+int in[MAXN];           //新编号下的数组
+int treearray[MAXN];
+int pos[MAXN];          //pos[i]表示，i号节点的编号
+int num[MAXN];          //num[pos[i]]:i节点的孩子数
+int first[MAXN],next[MAXM],v[MAXM];
+int n,cnt,q,nIndex;
+
+void addedge(int x,int y)
+{
+    v[cnt]=y;
+    next[cnt]=first[x];
+    first[x]=cnt++;
+}
+
+int dfs(int root,int fa)
+{
+    int ans=0;
+    for(int e=first[root];e!=-1;e=next[e])
+    {
+        if(v[e]==fa)    continue;
+
+        ans+=dfs(v[e],root);
+    }
+
+    pos[root]=nIndex++;
+    num[pos[root]]=ans;
+    return ans+1;
+}
+
+int lowbit(int x)
+{
+    return x&#38;(x^(x-1));
+}
+
+void update(int p)
+{
+    int tmp;
+    if(in[p]==1)
+        tmp=-1;
+    else
+        tmp=1;
+    in[p]^=1;
+
+    while(p&lt;=n)
+    {
+        treearray[p]+=tmp;
+        p+=lowbit(p);
+    }
+}
+int getsum(int p)
+{
+    int ans=0;
+    while(p&gt;0)
+    {
+        ans+=treearray[p];
+        p-=lowbit(p);
+    }
+    return ans;
+}
+int get(int l,int r)
+{
+    return getsum(r)-getsum(l-1);
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;,stdin);
+#endif
+
+    while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n)
+    {
+        cnt=0;
+        nIndex=1;
+        memset(first,-1,sizeof(first));
+        memset(in,0,sizeof(in));
+        memset(treearray,0,sizeof(treearray));
+
+        for(int i=1;i&lt;n;i++)
+        {
+            int x, y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            addedge(x,y);
+            addedge(y,x);
+        }
+
+        dfs(1,-1);
+
+        for(int i=1;i&lt;=n;i++)
+            update(pos[i]);
+
+        int q;
+        scanf(&#34;%d\n&#34;,&#38;q);
+        for(int i=0;i&lt;q;i++)
+        {
+            char c;int t;
+            scanf(&#34;%c %d\n&#34;,&#38;c,&#38;t);
+            if(c==&#39;C&#39;)
+                update(pos[t]);
+            else
+                printf(&#34;%d\n&#34;,get(pos[t]-num[pos[t]],pos[t]));
+        }
+    }
+
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

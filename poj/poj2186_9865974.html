@@ -1,0 +1,115 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2186">2186</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 1148K</td><td width=10px></td><td><b>Time:</b> 94MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=10010,MAXM=50010;
+
+int u[MAXM],v[MAXM],next[MAXM];
+int first[MAXN], id[MAXN],dfn[MAXN],low[MAXN];
+bool mark[MAXN];
+int index,nscc;
+int s[MAXN],sp;
+int n,m;
+
+void tarjan(int u)
+{
+    dfn[u]=low[u]=index++;
+    s[sp++]=u;
+    mark[u]=true;
+    for(int e=first[u];e!=-1;e=next[e])
+    {
+        if(!dfn[v[e]])
+        {
+            tarjan(v[e]);
+            low[u]=min(low[u],low[v[e]]);
+        }
+        else if( mark[v[e]])
+        {
+            low[u]=min(low[u],dfn[v[e]]);
+        }
+    }
+
+    if(dfn[u]==low[u])
+    {
+        int t;
+        do
+        {
+            t=s[--sp];
+            id[t]=nscc;
+            mark[t]=false;
+        }while(t!=u);
+        nscc++;
+    }
+}
+
+int solve()
+{
+    nscc=1;
+    sp=0;
+    index=1;
+    for(int u=1;u&lt;=n;u++)
+        if(!dfn[u])
+            tarjan(u);
+
+    memset(mark,0,sizeof(mark));
+    int p,f=0;
+    for(int u=1;u&lt;=n;u++)
+        for(int e=first[u];e!=-1;e=next[e])
+        {
+            if(id[u]!=id[v[e]])
+            {
+                mark[id[u]]=true;   //出度不为0
+            }
+        }
+    for(int u=1;u&lt;nscc;u++)
+        if(!mark[u])
+        {
+            f++;
+            p=u;
+            if(f&gt;1)
+                return 0;
+        }
+    int ans=0;
+    for(int i=1;i&lt;=n;i++)
+        if(id[i]==p)
+            ans++;
+    return ans;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    scanf(&#34;%d %d&#34;, &#38;n, &#38;m);
+    memset(first,-1,sizeof(first));
+    memset(next,-1,sizeof(next));
+    memset(dfn,0,sizeof(dfn));
+
+    for(int i=0;i&lt;m;i++)
+    {
+        scanf(&#34;%d %d&#34;,&#38;u[i],&#38;v[i]);
+        next[i]=first[u[i]];
+        first[u[i]]=i;
+    }
+    printf(&#34;%d\n&#34;,solve());
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

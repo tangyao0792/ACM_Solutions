@@ -1,0 +1,116 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2553">2553</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 25044K</td><td width=10px></td><td><b>Time:</b> 766MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;algorithm&gt;
+
+using namespace std;
+
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=5001;
+
+bool g[MAXN][MAXN],vis[MAXN],ins[MAXN];
+int dfn[MAXN],low[MAXN],s[MAXN],id[MAXN];
+int n,m,index,sp,nscc;
+
+void tarjan(int u)
+{
+    dfn[u]=low[u]=++index;
+    s[sp++]=u;
+    ins[u]=true;
+    for(int i=1;i&lt;=n;i++)
+    {
+        if(g[u][i] &#38;&#38; !dfn[i])
+        {
+            tarjan(i);
+            low[u]=min(low[u],low[i]);
+        }
+        else if(g[u][i] &#38;&#38;ins[i])
+        {
+            low[u]=min(low[u],dfn[i]);
+        }
+    }
+    if(dfn[u]==low[u])
+    {
+        int t;
+        do
+        {
+            t=s[--sp];
+            id[t]=nscc;
+            ins[t]=false;
+        }while(t!=u);
+        nscc++;
+    }
+
+}
+
+void solve()
+{
+    memset(dfn,0,sizeof(dfn));
+    memset(low,0,sizeof(low));
+    memset(id,0,sizeof(id));
+    memset(ins,0,sizeof(ins));
+
+    sp=0;
+    nscc=1;
+    index=0;
+    for(int i=1;i&lt;=n;i++)
+        if(!dfn[i])
+            tarjan(i);
+
+    memset(vis,0,sizeof(vis));
+    for(int i=1;i&lt;=n;i++)
+        for(int j=1;j&lt;=n;j++)
+            if(g[i][j] &#38;&#38; id[i]!=id[j])
+                vis[id[i]]=true;
+    sp=0;
+    for(int i=1;i&lt;nscc;i++)
+        if(!vis[i])
+            for(int j=1;j&lt;=n;j++)
+                if(id[j]==i)
+                    s[sp++]=j;
+
+    sort(s,s+sp);
+    if(sp&gt;0)
+    {
+        printf(&#34;%d&#34;,s[0]);
+        for(int i=1;i&lt;sp;i++)
+            printf(&#34; %d&#34;,s[i]);
+    }
+    printf(&#34;\n&#34;);
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n)
+    {
+        memset(g,0,sizeof(g));
+        scanf(&#34;%d&#34;,&#38;m);
+        for(int i=0;i&lt;m;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            g[x][y]=true;
+        }
+        solve();
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

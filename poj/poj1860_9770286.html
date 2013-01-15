@@ -1,0 +1,92 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1860">1860</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 196K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int INF = 1&lt;&lt;28;
+const double EPS = 1e-12;
+
+typedef struct
+{
+    int u,v;
+    double r, c;
+}E;
+
+E e[510];
+double d[510];
+int n, m, s,cnt;
+double value;
+
+bool bellman();
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+    while(scanf(&#34;%d %d %d %lf&#34;,&#38;n,&#38;m,&#38;s,&#38;value)&gt;0)
+    {
+        memset(d, 0, sizeof(d));
+        memset(e, 0, sizeof(e));
+        cnt = 0;
+        for(int i=0;i&lt;m;i++)
+        {
+            scanf(&#34;%d %d %lf %lf&#34;,&#38;e[cnt].u,&#38;e[cnt].v,&#38;e[cnt].r,&#38;e[cnt].c);
+            e[cnt+1].u=e[cnt].v;
+            e[cnt+1].v=e[cnt].u;
+            cnt++;
+            scanf(&#34;%lf %lf&#34;,&#38;e[cnt].r,&#38;e[cnt].c);
+            cnt++;
+        }
+        if(bellman())
+        {
+            printf(&#34;YES\n&#34;);
+        }
+        else
+        {
+            printf(&#34;NO\n&#34;);
+        }
+    }
+    return 0;
+}
+
+bool bellman()
+{
+    d[s]=value;
+    for(int k=0;k&lt;n-1;k++)
+    {
+        for(int i=0;i&lt;cnt;i++)
+        {
+            int x=e[i].u;
+            int y=e[i].v;
+            if(d[y]&lt;(d[x]-e[i].c)*e[i].r)
+            {
+                d[y] = (d[x]-e[i].c)*e[i].r;
+            }
+        }
+    }
+    for(int i=0;i&lt;cnt;i++)
+    {
+        int x=e[i].u;
+        int y=e[i].v;
+        if(d[y]&lt;(d[x]-e[i].c)*e[i].r)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+</pre>
+</ul>
+</body></html>

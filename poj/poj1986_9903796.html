@@ -1,0 +1,132 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1986">1986</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 5476K</td><td width=10px></td><td><b>Time:</b> 344MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+
+const int MAXN=40010;
+const int MAXM=2*MAXN;
+const int MAXQ=20010;
+
+struct edge
+{
+    int u,v,w,next;
+}e[MAXM];
+struct quest
+{
+    int u,v,ans,next,p;
+}que[MAXQ];
+struct newquest
+{
+    int p,next;
+}nq[MAXQ];
+
+int fe[MAXN],fq[MAXN],p[MAXN],dis[MAXN],vis[MAXN],fnq[MAXN];
+int n,m,cnte,cntq,q,cntnq;
+
+void addedge(int x,int y,int z)
+{
+    e[cnte].u=x;e[cnte].v=y;e[cnte].w=z;
+    e[cnte].next=fe[x];
+    fe[x]=cnte++;
+    e[cnte].u=y;e[cnte].v=x;e[cnte].w=z;
+    e[cnte].next=fe[y];
+    fe[y]=cnte++;
+}
+void addq(int x,int y, int i)
+{
+    que[cntq].p=i;
+    que[cntq].u=x;que[cntq].v=y;
+    que[cntq].next=fq[x];
+    fq[x]=cntq++;
+    que[cntq].p=i;
+    que[cntq].u=y;que[cntq].v=x;
+    que[cntq].next=fq[y];
+    fq[y]=cntq++;
+}
+void addnq(int x,int p)
+{
+    nq[cntnq].p=p;
+    nq[cntnq].next=fnq[x];
+    fnq[x]=cntnq++;
+}
+int find(int x){return p[x]==x?x:(p[x]=find(p[x]));}
+void unionset(int x,int y)
+{
+    int px=find(x);
+    int py=find(y);
+    p[px]=p[py];
+}
+void lca(int par,int fa, int d)
+{
+    p[par]=par;
+    dis[par]=d;vis[par]=1;
+    for(int i=fq[par];i!=-1;i=que[i].next)
+    {
+        int v=que[i].v;
+        if(vis[v])
+            addnq(find(v),i);
+    }
+    for(int i=fe[par];i!=-1;i=e[i].next)
+    {
+        int v=e[i].v;
+        if(v==fa)   continue;
+        lca(v,par,d+e[i].w);
+        unionset(v,par);
+    }
+
+    for(int i=fnq[par];i!=-1;i=nq[i].next)
+    {
+        int p=nq[i].p;
+        int x=que[p].u;
+        int y=que[p].v;
+        que[que[p].p].ans=dis[x]+dis[y]-2*d;
+    }
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    while(scanf(&#34;%d %d&#34;,&#38;n,&#38;m)==2)
+    {
+        cnte=cntq=cntnq=0;
+        memset(fe,-1,sizeof(fe));
+        memset(vis,0,sizeof(vis));
+        memset(fnq,-1,sizeof(fnq));
+        memset(fq,-1,sizeof(fq));
+        for(int i=0;i&lt;m;i++)
+        {
+            int x,y,z;char c;
+            scanf(&#34;%d %d %d %c&#34;,&#38;x,&#38;y,&#38;z,&#38;c);
+            addedge(x,y,z);
+        }
+        scanf(&#34;%d&#34;,&#38;q);
+        for(int i=0;i&lt;q;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            addq(x,y,i);
+        }
+        lca(1,-1,0);
+        for(int i=0;i&lt;q;i++)
+            printf(&#34;%d\n&#34;,que[i].ans);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

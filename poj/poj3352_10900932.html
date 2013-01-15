@@ -1,0 +1,166 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3352">3352</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 512K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define min(a,b) (a&gt;b?b:a)
+#define max(a,b) (a&gt;b?a:b)
+
+const int MAXN=1100;
+const int MAXM=2*MAXN;
+
+struct edge
+{
+	int next,id,v,u;
+}e[MAXM];
+
+int dfn[MAXN],low[MAXN],vis[MAXN],f[MAXN],out[MAXM],vise[MAXM],cnt;
+int nIndex;
+int n,m;
+
+inline void init()
+{
+	memset(out,0,sizeof(out));
+	memset(dfn,0,sizeof(dfn));
+	memset(vis,0,sizeof(vis));
+	memset(f,-1,sizeof(f));
+	memset(vise,0,sizeof(vise));
+	cnt=0;
+}
+
+inline void add(int x,int y)
+{
+	e[cnt].u=x;
+	e[cnt].v=y;
+	e[cnt].next=f[x];
+	f[x]=cnt++;
+
+	e[cnt].u=y;
+	e[cnt].v=x;
+	e[cnt].next=f[y];
+	f[y]=cnt++;
+}
+
+void tarjan(int u)
+{
+	dfn[u]=low[u]=nIndex++;
+	vis[u]=1;
+	for(int i=f[u];i!=-1;i=e[i].next)
+	{
+		if(vise[i/2])   continue;
+		vise[i/2]=1;
+		int v=e[i].v;
+		if(!vis[v])
+		{
+			tarjan(v);
+		}
+		low[u]=min(low[u],low[v]);
+		if(dfn[u]&lt;low[v])
+		{
+			out[i/2]=1;
+		}
+	}
+	vis[u]=2;
+}
+
+int nf[MAXN],u[MAXN*2],v[MAXN*2],next[MAXN*2],ncnt;
+int id[MAXN];
+int ind[MAXN];
+
+inline void addnew(int x,int y)
+{
+	u[ncnt]=x;
+	v[ncnt]=y;
+	next[ncnt]=nf[x];
+	nf[x]=ncnt++;
+}
+int nscc;
+
+void dfs(int x,int fa)
+{
+	id[x]=nscc;
+	for(int i=nf[x];i!=-1;i=next[i])
+	{
+		int y=v[i];
+		if(id[y])
+			continue;
+		dfs(y,x);
+	}
+}
+
+int solve()
+{
+	for(int i=1;i&lt;=n;i++)
+		if(!vis[i])
+			tarjan(i);
+
+	ncnt=0;
+	memset(nf,-1,sizeof(nf));
+	memset(ind,0,sizeof(ind));
+
+	for(int i=0;i&lt;cnt;i++)
+	{
+		if(!out[i/2])
+			addnew(e[i].u,e[i].v);
+	}
+
+	memset(id,0,sizeof(id));
+	nscc=1;
+
+	for(int i=1;i&lt;=n;i++)
+		if(!id[i])
+		{
+			dfs(i,-1);
+			nscc++;
+		}
+
+	for(int i=0;i&lt;cnt;i+=2)
+	{
+		if(out[i/2])
+		{
+			ind[id[e[i].u]]++;
+			ind[id[e[i].v]]++;
+		}
+	}
+	int ans=0;
+	for(int i=1;i&lt;nscc;i++)
+		if(ind[i]==1)
+			ans++;
+	return (ans+1)/2;
+
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+
+	while(scanf(&#34;%d %d&#34;,&#38;n,&#38;m)==2)
+	{
+		init();
+		for(int i=0;i&lt;m;i++)
+		{
+			int x,y;
+			scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+			add(x,y);
+		}
+		printf(&#34;%d\n&#34;,solve());
+	}
+
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,118 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1679">1679</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 524K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+
+const int INF=1&lt;&lt;28;
+const int MAXN=110;
+
+int g[MAXN][MAXN],lowc[MAXN],v[MAXN],f[MAXN][MAXN],fa[MAXN];
+int vis[MAXN][MAXN];
+int n,m;
+
+int prim()
+{
+    for(int i=1;i&lt;=n;i++)
+    {
+        lowc[i]=g[1][i];
+        fa[i]=1;
+    }
+    memset(vis,0,sizeof(vis));
+    memset(f,0,sizeof(f));
+    memset(v,0,sizeof(v));
+    v[1]=1;
+    int ans=0;
+    int mind,minn;
+
+    for(int i=0;i&lt;n-1;i++)
+    {
+        mind=INF;
+        for(int j=1;j&lt;=n;j++)
+        {
+            if(!v[j] &#38;&#38; lowc[j]&lt;mind)
+            {
+                minn=j;
+                mind=lowc[j];
+            }
+        }
+        ans+=mind;
+        for(int j=1;j&lt;=n;j++)
+        {
+            if(v[j])
+            {
+                f[j][minn]
+                =f[minn][j]
+                =max(f[j][fa[minn]],g[minn][fa[minn]]);
+            }
+        }
+        vis[fa[minn]][minn]=vis[minn][fa[minn]]=1;
+        v[minn]=1;
+
+        for(int j=1;j&lt;=n;j++)
+        {
+            if(!v[j] &#38;&#38; g[j][minn]&lt;lowc[j])
+            {
+                lowc[j]=g[j][minn];
+                fa[j]=minn;
+            }
+        }
+
+    }
+
+    return ans;
+}
+
+void output()
+{
+    int ans=prim();
+    for(int i=1;i&lt;=n;i++)
+        for(int j=1;j&lt;=n;j++)
+            if(!vis[i][j] &#38;&#38; g[i][j]&lt;INF &#38;&#38; f[i][j]==g[i][j])
+            {
+                printf(&#34;Not Unique!\n&#34;);
+                return;
+            }
+    printf(&#34;%d\n&#34;,ans);
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int nCase;
+    scanf(&#34;%d&#34;, &#38;nCase);
+    while(nCase--)
+    {
+        scanf(&#34;%d %d&#34;, &#38;n, &#38;m);
+
+        for(int i=1;i&lt;=n;i++)
+            for(int j=1;j&lt;=n;j++)
+                g[i][j]=INF;
+
+        for(int i=0;i&lt;m;i++)
+        {
+            int x,y,z;
+            scanf(&#34;%d %d %d&#34;,&#38;x,&#38;y,&#38;z);
+            g[x][y]=g[y][x]=z;
+        }
+        output();
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

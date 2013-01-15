@@ -1,0 +1,120 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2728">2728</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 23928K</td><td width=10px></td><td><b>Time:</b> 454MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;cmath&gt;
+#include&lt;iostream&gt;
+
+using namespace std;
+
+const int MAXN=1010;
+const double eps=1e-5;
+const long long INF=1ll&lt;&lt;60;
+
+int x[MAXN],y[MAXN],z[MAXN];
+int n;
+double a[MAXN][MAXN],b[MAXN][MAXN],d[MAXN][MAXN];
+int vis[MAXN];
+//#define ABS(x) ((x)&lt;0?(-x):(x))
+
+inline double ABS(double x)
+{
+    return x&lt;0?-x:x;
+}
+
+double lowcost[MAXN];
+int closet[MAXN];
+double prim()
+{
+	int i,j,minone;
+	double mindis;
+	double p=0,q=0;
+	for(i = 1;i &lt; n;i++)
+	{
+		lowcost[i] = d[0][i];
+		closet[i]=0;
+	}
+	memset(vis,0,sizeof(vis));
+	vis[0]=1;
+	for(i = 0;i &lt; n-1;i++)
+	{
+		mindis = INF;
+		for(j = 0;j &lt; n;j++)
+			if(!vis[j] &#38;&#38; mindis &gt; lowcost[j])
+			{
+				mindis = lowcost[j];
+				minone = j;
+			}
+        p+=a[minone][closet[minone]];
+        q+=b[minone][closet[minone]];
+
+		vis[minone]=1;
+
+		for(j = 0;j &lt; n;j++)
+			if(!vis[j] &#38;&#38; d[j][minone] &lt; lowcost[j])
+			{
+				lowcost[j] = d[j][minone];
+				closet[j]=minone;
+			}
+	}
+	return p/q;
+}
+
+double dinkelback()
+{
+	double l,ans;
+	l=0;
+	while(true)
+	{
+		ans=l;
+		for(int i=0;i&lt;n;i++)
+		{
+			for(int j=i+1;j&lt;n;j++)
+			{
+				d[i][j]=d[j][i]=a[i][j]-l*b[i][j];
+			}
+		}
+
+		l=prim();
+		if(ABS(l-ans)&lt;eps)
+			break;
+	}
+	return ans;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in&#34;,&#34;r&#34;,stdin);
+#endif
+	while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n)
+	{
+		for(int i=0;i&lt;n;i++)
+			scanf(&#34;%d %d %d&#34;,&#38;x[i],&#38;y[i],&#38;z[i]);
+
+		for(int i=0;i&lt;n;i++)
+			for(int j=i+1;j&lt;n;j++)
+			{
+				int ta=x[i]-x[j];
+				int tb=y[i]-y[j];
+				a[i][j]=a[j][i]=ABS(z[i]-z[j]);
+				b[i][j]=b[j][i]=sqrt(double(ta*ta+tb*tb));
+			}
+		printf(&#34;%.3f\n&#34;,dinkelback());
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

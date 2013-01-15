@@ -1,0 +1,63 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2063">2063</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 580K</td><td width=10px></td><td><b>Time:</b> 94MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+
+const int MAXM=1000000*50/1000;
+
+int V,Y;
+int c[11],w[11];
+int dp[MAXM];
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+
+    int T;
+    scanf(&#34;%d&#34;,&#38;T);
+    while(T--)
+    {
+        scanf(&#34;%d %d&#34;,&#38;V,&#38;Y);
+        int d;
+        scanf(&#34;%d&#34;,&#38;d);
+        for(int i=1;i&lt;=d;i++)
+        {
+            scanf(&#34;%d %d&#34;,&#38;c[i],&#38;w[i]);
+            c[i]/=1000;
+        }
+        int tmp=V%1000;
+        V=V/1000;
+        for(int y=0;y&lt;Y;y++)
+        {
+            memset(dp,0,sizeof(dp));
+            for(int i=1;i&lt;=d;i++)
+            {
+                for(int v=c[i];v&lt;=V;v++)
+                    dp[v]=max(dp[v],dp[v-c[i]]+w[i]);
+            }
+            tmp+=dp[V];
+            V+=tmp/1000;
+            tmp=tmp%1000;
+        }
+        printf(&#34;%d\n&#34;,V*1000+tmp);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

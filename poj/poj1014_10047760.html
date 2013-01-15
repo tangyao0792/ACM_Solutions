@@ -1,0 +1,87 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1014">1014</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 860K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+int v[6];
+int w[20010];
+int dp[20010*6];
+
+bool solve(int sum)
+{
+    int cnt=1;
+    if(sum%2==1)    return false;
+    sum/=2;
+
+    for(int i=0;i&lt;6;i++)
+    {
+        int tmp=0;
+        for(int k=1;k&lt;v[i];k*=2)
+        {
+            w[cnt++]=(i+1)*k;
+            tmp+=(i+1)*k;
+        }
+        if(tmp&lt;v[i]*(i+1))
+        {
+            w[cnt]=v[i]*(i+1)-tmp;
+            cnt++;
+        }
+    }
+    memset(dp,0,sizeof(dp));
+    dp[0]=1;
+
+    for(int i=1;i&lt;cnt;i++)
+        for(int v=sum;v&gt;=w[i];v--)
+            if(dp[v-w[i]])
+                dp[v]=1;
+
+    if(dp[sum])   return true;
+
+    return false;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+
+    int nCase=0;
+    while(true)
+    {
+        int sum=0;
+        for(int i=0;i&lt;6;i++)
+        {
+            scanf(&#34;%d&#34;,&#38;v[i]);
+            sum+=v[i]*(i+1);
+        }
+        if(!sum)    break;
+
+        nCase++;
+        printf(&#34;Collection #%d:\n&#34;,nCase);
+        if(solve(sum))
+        {
+            printf(&#34;Can be divided.\n&#34;);
+        }
+        else
+        {
+            printf(&#34;Can&#39;t be divided.\n&#34;);
+        }
+        printf(&#34;\n&#34;);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,69 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3264">3264</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 7404K</td><td width=10px></td><td><b>Time:</b> 3422MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;cmath&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=50010;
+
+int n,q;
+int stMax[MAXN][18],stMin[MAXN][18];
+
+void SparseTable()
+{
+    for(int j=1;1+(1&lt;&lt;j) &lt;= n; j++)
+    {
+        for(int i=1;i+(1&lt;&lt;(j-1)) &lt;=n;i++)
+        {
+            stMax[i][j]=max(stMax[i][j-1],stMax[i+(1&lt;&lt;(j-1))][j-1]);
+            stMin[i][j]=min(stMin[i][j-1],stMin[i+(1&lt;&lt;(j-1))][j-1]);
+        }
+    }
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    while(scanf(&#34;%d %d&#34;,&#38;n,&#38;q)==2)
+    {
+        for(int i=1;i&lt;=n;i++)
+        {
+            scanf(&#34;%d&#34;,&#38;stMax[i][0]);
+            stMin[i][0]=stMax[i][0];
+        }
+
+        SparseTable();
+
+        for(int i=0;i&lt;q;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+
+            int k=int(log(double(y-x+1))/log(2.0));
+            int ans=max(stMax[x][k],stMax[y-(1&lt;&lt;k)+1][k]);
+
+            ans-=min(stMin[x][k],stMin[y-(1&lt;&lt;k)+1][k]);
+            printf(&#34;%d\n&#34;,ans);
+        }
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

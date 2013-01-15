@@ -1,0 +1,130 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3177">3177</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 8396K</td><td width=10px></td><td><b>Time:</b> 94MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=1010;
+
+int g[MAXN][MAXN],f[MAXN][MAXN];
+int id[MAXN],dfn[MAXN],low[MAXN],d[MAXN];
+bool mark[MAXN];
+int n,m,cnt,nscc,s[MAXN],sp,index;
+
+
+void tarjan(int x,int flag)
+{
+    dfn[x]=low[x]=index++;
+    s[sp++]=x;
+    mark[x]=true;
+    for(int y=1;y&lt;=n;y++)
+    {
+        if(!g[x][y])    continue;
+        g[y][x]=0;
+        if(!dfn[y])
+        {
+            tarjan(y,flag);
+            low[x]=min(low[x],low[y]);
+            if(dfn[x]&lt;low[y] &#38;&#38; flag)
+            {
+                g[x][y]=g[y][x]=0;
+            }
+        }
+        else if(mark[y])
+        {
+            low[x]=min(low[x],dfn[y]);
+        }
+    }
+    if(dfn[x]==low[x])
+    {
+        int t;
+        do
+        {
+            t=s[--sp];
+            mark[t]=false;
+            id[t]=nscc;
+        }while(t!=x);
+        nscc++;
+    }
+}
+
+int solve()
+{
+    memset(mark,0,sizeof(mark));
+    memset(dfn,0,sizeof(dfn));
+    memset(id,0,sizeof(id));
+    memcpy(f,g,sizeof(f));
+    index=nscc=1;
+    sp=0;
+    for(int i=1;i&lt;=n;i++)
+        if(!dfn[i])
+            tarjan(i,1);
+
+    memset(d,0,sizeof(d));
+    memset(mark,0,sizeof(mark));
+    memset(dfn,0,sizeof(dfn));
+    memset(id,0,sizeof(id));
+    index=nscc=1;
+    sp=0;
+
+    for(int i=1;i&lt;=n;i++)
+        if(!dfn[i])
+            tarjan(i,0);
+
+    memset(g,0,sizeof(g));
+    for(int i=1;i&lt;=n;i++)
+        for(int j=1;j&lt;=n;j++)
+            if(id[i]!=id[j] &#38;&#38; f[i][j])
+                g[id[i]][id[j]]=g[id[j]][id[i]]=1;
+
+    for(int i=1;i&lt;nscc;i++)
+        for(int j=1;j&lt;nscc;j++)
+            if(g[i][j])
+            {
+                d[i]++;
+                d[j]++;
+            }
+
+    int ans=0;
+    for(int i=1;i&lt;nscc;i++)
+        if(d[i]==2)
+            ans++;
+
+    return (ans+1)/2;
+}
+
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    while(scanf(&#34;%d %d&#34;,&#38;n,&#38;m)==2)
+    {
+        memset(g,0,sizeof(g));
+        cnt=0;
+        for(int i=0;i&lt;m;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            g[x][y]=g[y][x]=1;
+        }
+        printf(&#34;%d\n&#34;,solve());
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

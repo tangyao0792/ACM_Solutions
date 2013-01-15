@@ -1,0 +1,103 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1515">1515</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 500K</td><td width=10px></td><td><b>Time:</b> 157MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=1010;
+const int MAXM=MAXN*8;
+
+int first[MAXN],dfn[MAXN],low[MAXN],vis[MAXN];
+int next[MAXM],u[MAXM],v[MAXM],mark[MAXM];
+int n,m,nIndex,cnt;
+
+void addedge(int x, int y)
+{
+    u[cnt]=x;
+    v[cnt]=y;
+    next[cnt]=first[x];
+    first[x]=cnt++;
+}
+
+void tarjan(int x,int fa)
+{
+    dfn[x]=low[x]=nIndex++;
+    vis[x]=1;
+    for(int e=first[x];e!=-1;e=next[e])
+    {
+
+        int y=v[e];
+        if(y==fa)   continue;
+
+        if(vis[y] != 2) mark[e]=true;
+        if(!vis[y])
+        {
+            tarjan(y,x);
+            low[x]=min(low[x],low[y]);
+            if(dfn[x]&lt;low[y])
+                mark[e]=false;
+        }
+        else if(vis[y]==1)
+        {
+            low[x]=min(low[x],dfn[y]);
+        }
+    }
+    vis[x]=2;
+}
+
+void solve()
+{
+    memset(vis,0,sizeof(vis));
+    memset(mark,0,sizeof(mark));
+    nIndex=1;
+    for(int i=1;i&lt;=n;i++)
+        if(!vis[i])
+            tarjan(i, -1);
+
+    for(int i=1;i&lt;=n;i++)
+        for(int e=first[i]; e!=-1; e=next[e])
+            if(!mark[e])
+                printf(&#34;%d %d\n&#34;,u[e],v[e]);
+
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int nCase=0;
+    while(scanf(&#34;%d %d&#34;,&#38;n,&#38;m)==2 &#38;&#38; !(!n &#38;&#38; !m))
+    {
+        memset(first,-1,sizeof(first));
+        cnt=0;
+        for(int i=0;i&lt;m;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            addedge(x,y);
+            addedge(y,x);
+        }
+        nCase++;
+        printf(&#34;%d\n\n&#34;,nCase);
+        solve();
+        printf(&#34;#\n&#34;);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

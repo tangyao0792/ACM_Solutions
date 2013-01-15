@@ -1,0 +1,94 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1330">1330</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 944K</td><td width=10px></td><td><b>Time:</b> 47MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int MAXN=10001;
+const int MAXM=10001;
+
+int first[MAXN],p[MAXN],anc[MAXN],d[MAXN];
+int next[MAXM],u[MAXM],v[MAXM];
+int n,cnt,a,b;
+bool color[MAXN];
+
+int find(int x){return p[x]==x?x:(p[x]=find(p[x]));}
+
+void unionp(int x, int y)
+{
+	int px=find(x);
+	int py=find(y);
+	if(px!=py)
+	{
+		p[px]=p[py];
+	}
+}
+
+void lca(int parent)
+{
+	p[parent]=parent;
+	anc[find(parent)]=parent;
+	for(int e=first[parent];e!=-1;e=next[e])
+	{
+		lca(v[e]);
+		unionp(parent,v[e]);
+		anc[find(v[e])]=parent;
+	}
+	color[parent]=true;
+	if(parent==a &#38;&#38; color[b])
+	{
+		printf(&#34;%d\n&#34;,anc[find(b)]);
+	}
+	else if(parent==b &#38;&#38; color[a])
+	{
+		printf(&#34;%d\n&#34;,anc[find(a)]);
+	}
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+	int nCase;
+	scanf(&#34;%d&#34;,&#38;nCase);
+	while(nCase--)
+	{
+		memset(first,-1,sizeof(first));
+		memset(color,0,sizeof(color));
+		memset(d,0,sizeof(d));
+		scanf(&#34;%d&#34;,&#38;n);
+		cnt=0;
+		for(int i=1;i&lt;n;i++)
+		{
+			int x,y;
+			scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+			u[cnt]=x;
+			v[cnt]=y;
+			d[y]++;
+			next[cnt]=first[x];
+			first[x]=cnt++;
+		}
+		scanf(&#34;%d %d&#34;,&#38;a,&#38;b);
+		for(int i=1;i&lt;=n;i++)
+            if(!d[i])
+            {
+                lca(i);
+                break;
+            }
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

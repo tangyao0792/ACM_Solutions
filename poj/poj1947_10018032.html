@@ -1,0 +1,96 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1947">1947</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 804K</td><td width=10px></td><td><b>Time:</b> 32MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+
+using namespace std;
+
+const int INF=1&lt;&lt;28;
+const int MAXN=155;
+
+int min(int a,int b){return a&lt;b?a:b;}
+
+vector&lt;int&gt; v[155];
+
+int dp[MAXN][MAXN];
+int d[MAXN];        //入度
+int n,p;
+
+void dfs(int root)
+{
+    int s=v[root].size();
+    for(int i=0;i&lt;s;i++)    dfs(v[root][i]);
+
+
+    for(int i=0;i&lt;s;i++)
+    {
+        int son=v[root][i];
+        for(int j=p;j&gt;=2;j--)
+        {
+            for(int k=1;k&lt;j;k++)
+            {
+                dp[root][j]=min(dp[root][j],dp[son][k]+dp[root][j-k]-2);
+            }
+        }
+    }
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+
+    scanf(&#34;%d %d&#34;,&#38;n,&#38;p);
+
+    memset(d,0,sizeof(d));
+
+    int x,y;
+    for(int i=0;i&lt;n-1;i++)
+    {
+        scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+        v[x].push_back(y);
+        d[y]++;
+    }
+
+    int root;
+    for(int i=1;i&lt;=n;i++)
+        if(d[i]==0)
+        {
+            root=i;
+            break;
+        }
+
+
+    for(int i=1;i&lt;=n;i++)
+    {
+        int s=v[i].size();
+        dp[i][1]=s+1;
+        for(int j=2;j&lt;=p;j++)
+            dp[i][j]=INF;
+    }
+
+    dfs(root);
+    dp[root][p]--;
+    int ans=INF;
+    for(int i=1;i&lt;=n;i++)
+        ans=min(ans,dp[i][p]);
+    printf(&#34;%d\n&#34;,ans);
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

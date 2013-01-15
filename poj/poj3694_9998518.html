@@ -1,0 +1,197 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3694">3694</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 15924K</td><td width=10px></td><td><b>Time:</b> 469MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=100010;
+const int MAXM=200010*2;
+
+struct edge
+{
+    int u,v,id,next;
+}e[MAXM];
+
+int f[MAXN];
+int out[MAXM/2];        //记录一条边是否被删
+int n,m,cnt;
+int cntb;               //桥数
+int dfn[MAXN],low[MAXN];
+int id[MAXN],nIndex;
+int vise[MAXM];         //边是否访问过
+int vis[MAXN];
+int fa[MAXN];           //树
+int isb[MAXN];          //记录数边是否为桥
+int h[MAXN];
+
+void addedge(int x,int y,int id)
+{
+    e[cnt].u=x;e[cnt].v=y;e[cnt].id=id;
+    e[cnt].next=f[x];
+    f[x]=cnt++;
+}
+void tarjan(int u)
+{
+    dfn[u]=low[u]=nIndex++;
+    vis[u]=1;
+    for(int i=f[u];i!=-1;i=e[i].next)
+    {
+        if(vise[e[i].id])   continue;
+        vise[e[i].id]=1;
+        int v=e[i].v;
+        if(!vis[v])
+        {
+            tarjan(v);
+            low[u]=min(low[u],low[v]);
+            if(dfn[u]&lt;low[v])
+            {
+                cntb++;
+                out[e[i].id]=1;
+            }
+        }
+        else if(vis[v]==1)
+        {
+            low[u]=min(low[u],dfn[v]);
+        }
+    }
+    vis[u]=2;
+}
+
+void dfs(int u)
+{
+    id[u]=nIndex;
+    for(int i=f[u];i!=-1;i=e[i].next)
+    {
+        if(!out[e[i].id] &#38;&#38; !id[e[i].v])
+        {
+            dfs(e[i].v);
+        }
+    }
+}
+
+void buildtree(int u,int ch)
+{
+    h[id[u]]=ch;
+    vis[u]=1;
+    for(int i=f[u];i!=-1;i=e[i].next)
+    {
+        int v=e[i].v;
+        if(!vis[v])
+        {
+            if(id[u]==id[v])
+            {
+                buildtree(v,ch);
+            }
+            else
+            {
+                fa[id[v]]=id[u];
+                if(out[e[i].id])
+                    isb[id[v]]=1;
+                buildtree(v,ch+1);
+            }
+        }
+    }
+}
+void swap(int &#38;a,int &#38;b)
+{
+    int tmp=a;
+    a=b;
+    b=tmp;
+}
+int solve(int x,int y)
+{
+    if(h[x]&lt;h[y])
+        swap(x,y);
+    while(h[x]&gt;h[y])
+    {
+        if(isb[x])
+        {
+            cntb--;
+            isb[x]=0;
+        }
+        x=fa[x];
+    }
+    while(x!=y)
+    {
+        if(isb[x])
+        {
+            cntb--;
+            isb[x]=0;
+        }
+        x=fa[x];
+        if(isb[y])
+        {
+            cntb--;
+            isb[y]=0;
+        }
+        y=fa[y];
+    }
+    return cntb;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int nCase=0;
+    while(scanf(&#34;%d %d&#34;,&#38;n,&#38;m)==2)
+    {
+        if(n==0 &#38;&#38; m==0)    break;
+        nCase++;
+        cnt=cntb=0;
+        memset(out,0,sizeof(out));
+        memset(vise,0,sizeof(vise));
+        memset(f,-1,sizeof(f));
+        memset(vis,0,sizeof(vis));
+        memset(id,0,sizeof(id));
+        memset(fa,-1,sizeof(fa));
+        memset(isb,0,sizeof(isb));
+        memset(h,0,sizeof(h));
+        nIndex=1;
+        for(int i=0;i&lt;m;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            addedge(x,y,i);addedge(y,x,i);
+        }
+        tarjan(1);
+        nIndex=1;
+        for(int i=1;i&lt;=n;i++)       //缩点
+        {
+            if(!id[i])
+            {
+                dfs(i);
+                nIndex++;
+            }
+        }
+        memset(vis,0,sizeof(vis));
+        buildtree(1,0);
+
+        int q;
+        scanf(&#34;%d&#34;,&#38;q);
+        printf(&#34;Case %d:\n&#34;,nCase);
+        for(int i=0;i&lt;q;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            printf(&#34;%d\n&#34;,solve(id[x],id[y]));
+        }
+        printf(&#34;\n&#34;);
+    }
+    return 0;
+}</pre>
+</ul>
+</body></html>

@@ -1,0 +1,59 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2115">2115</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 412K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;stdio.h&gt;
+#include&lt;math.h&gt;
+
+__int64 gcd(__int64 a, __int64 b, __int64 &#38;x, __int64 &#38;y);
+
+int main()
+{
+    __int64 a, b, c, k;
+    __int64 d, r;
+    __int64 x, y;
+    while( (scanf(&#34;%I64d %I64d %I64d %I64d&#34;,&#38;a,&#38;b,&#38;c,&#38;k) &gt; 0) &#38;&#38;
+           !(a == 0 &#38;&#38; b == 0 &#38;&#38; c == 0 &#38;&#38; k == 0))
+    {
+        d = (__int64)pow(2,k);
+        r = gcd(c,d,x,y);
+        if((b-a) % r)
+        {
+            printf(&#34;FOREVER\n&#34;);
+        }
+        else
+        {
+            x = (b-a) / r * x  %(d/r)+ (d/r);
+            x = x % (d / r);
+            printf(&#34;%I64d\n&#34;,x);
+        }
+    }
+    return 0;
+}
+
+__int64 gcd(__int64 a, __int64 b, __int64 &#38;x, __int64 &#38;y)
+{
+    if(b == 0)
+    {
+        x = 1;
+        y = 0;
+        return a;
+    }
+    __int64 r = gcd(b , a % b, x, y);
+    __int64 temp = x;
+    x = y;
+    y = temp - (a/b) * y;
+    return r;
+}
+</pre>
+</ul>
+</body></html>

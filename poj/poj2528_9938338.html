@@ -1,0 +1,156 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2528">2528</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 1484K</td><td width=10px></td><td><b>Time:</b> 79MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;algorithm&gt;
+
+using namespace std;
+
+const int MAXN=2*10010;
+
+struct Line
+{
+    int li,num;
+}line[MAXN];
+
+struct Tree
+{
+    int l,r,c;
+}T[MAXN*4];
+
+int set[MAXN][2],vis[MAXN];
+int n,ans;
+
+bool comp(Line x,Line y)
+{
+    return x.li&lt;y.li;
+}
+
+
+void build(int s,int t,int pos)
+{
+    T[pos].l=s;
+    T[pos].r=t;
+    T[pos].c=0;
+
+    if(s==t)    return;
+
+    int mid=(s+t)&gt;&gt;1;
+
+    build(s,mid,2*pos);
+    build(mid+1,t,2*pos+1);
+}
+
+void ins(int s,int t,int id,int pos)
+{
+    if(s==T[pos].l &#38;&#38; t==T[pos].r)
+    {
+        T[pos].c=id;
+        return;
+    }
+    if(T[pos].c != 0)
+    {
+        T[pos*2].c=T[pos].c;
+        T[pos*2+1].c=T[pos].c;
+        T[pos].c=0;
+    }
+    int l=T[pos].l;
+    int r=T[pos].r;
+
+    int mid=(l+r)&gt;&gt;1;
+
+    if(mid&gt;=t)
+    {
+        ins(s,t,id,2*pos);
+    }
+    else if(mid&lt;s)
+    {
+        ins(s,t,id,2*pos+1);
+    }
+    else
+    {
+        ins(s,mid,id,pos*2);
+        ins(mid+1,t,id,pos*2+1);
+    }
+}
+
+void find(int pos)
+{
+    if(T[pos].c!=0 )
+    {
+        if(!vis[T[pos].c])
+        {
+            ans++;
+            vis[T[pos].c]=1;
+        }
+        return;
+    }
+    int l=T[pos].l,r=T[pos].r;
+    if(l==r)    return;
+
+    find(pos*2);
+    find(pos*2+1);
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+    int nCase;
+    while(scanf(&#34;%d&#34;,&#38;nCase)==1)
+    while(nCase--)
+    {
+        scanf(&#34;%d&#34;,&#38;n);
+        for(int i=0;i&lt;n;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            set[i][0]=x;set[i][1]=y;
+            line[i*2].li=x;
+            line[i*2].num=-i-1;
+            line[i*2+1].li=y;
+            line[i*2+1].num=i+1;
+        }
+        sort(line,line+2*n,comp);
+        int tmp=line[0].li;int tp=1;
+
+        for(int i=0;i&lt;2*n;i++)
+        {
+            if(tmp!=line[i].li)
+            {
+                tp++;
+                tmp=line[i].li;
+            }
+            if(line[i].num&lt;0)
+                set[-line[i].num-1][0]=tp;
+            else
+                set[line[i].num-1][1]=tp;
+        }
+
+        build(1,tp,1);
+
+        for(int i=0;i&lt;n;i++)
+            ins(set[i][0],set[i][1],i+1,1);
+
+        memset(vis,0,sizeof(vis));
+        ans=0;
+        find(1);
+        printf(&#34;%d\n&#34;,ans);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

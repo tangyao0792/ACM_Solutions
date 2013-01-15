@@ -1,0 +1,164 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3691">3691</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 4368K</td><td width=10px></td><td><b>Time:</b> 157MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define min(a,b) (a&lt;b?a:b)
+
+const int INF=1&lt;&lt;28;
+const int MAXN=1010;
+const int size=4;
+
+struct Node
+{
+    int next[size];
+    int fail,cnt,ch;
+    void init()
+    {
+        cnt=fail=0;
+        memset(next,0,sizeof(next));
+    }
+}node[MAXN];
+
+int cnt;        //分配节点
+int n,m;
+int queue[MAXN],head,tail;
+int dp[MAXN][MAXN];
+int map[300];
+void insert(char *str)
+{
+    int pos=0;
+    for(int i=0;str[i];i++)
+    {
+        int x=map[str[i]];
+        if(!node[pos].next[x])
+        {
+            node[++cnt].init();
+            node[pos].next[x]=cnt;
+            node[cnt].ch=str[i]-&#39;A&#39;;
+        }
+        pos=node[pos].next[x];
+    }
+    node[pos].cnt++;
+}
+
+void make_fail()
+{
+    head=tail=0;
+    for(int i=0;i&lt;size;i++)
+    {
+        if(node[0].next[i])
+        {
+            queue[tail++]=node[0].next[i];
+            node[node[0].next[i]].fail=0;
+        }
+    }
+
+    while(head&lt;tail)
+    {
+        int cur=queue[head++];
+        int fail=node[cur].fail;
+
+        node[cur].cnt+=node[fail].cnt;
+
+        for(int i=0;i&lt;size;i++)
+        {
+            if(node[cur].next[i])
+            {
+                queue[tail++]=node[cur].next[i];
+                node[node[cur].next[i]].fail=node[fail].next[i];
+            }
+            else
+            {
+                node[cur].next[i]=node[fail].next[i];
+            }
+        }
+    }
+}
+
+inline char getch(int x)
+{
+    switch (x)
+    {
+        case 0:return &#39;A&#39;;
+        case 1:return &#39;T&#39;;
+        case 2:return &#39;G&#39;;
+
+    }
+    return &#39;C&#39;;
+}
+
+int solve(char *str)
+{
+	make_fail();
+	int nLen=strlen(str);
+	for(int i=0;i&lt;=nLen;i++)
+		for(int j=0;j&lt;=cnt;j++)
+			dp[i][j]=INF;
+	dp[0][0]=0;
+	int w;
+	for(int i=0;i&lt;nLen;i++)
+	{
+		for(int j=0;j&lt;=cnt;j++)
+		{
+			if(node[j].cnt)continue;
+			for(int k=0;k&lt;size;k++)
+			{
+				int next=node[j].next[k];
+                if(node[next].cnt)	continue;
+				char c=getch(k);
+				if(str[i]!=c)
+					w=1;
+				else
+					w=0;
+
+				dp[i+1][next]=min(dp[i+1][next],dp[i][j]+w);
+			}
+		}
+	}
+	int ans=INF;
+	for(int i=0;i&lt;=cnt;i++)
+		ans=min(ans,dp[nLen][i]);
+	return ans;
+}
+int main() {
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	map[&#39;A&#39;]=0;map[&#39;T&#39;]=1;
+	map[&#39;G&#39;]=2;map[&#39;C&#39;]=3;
+	int nCase=0;
+	while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n)
+	{
+		nCase++;
+		char str[1100];
+		cnt=0;
+		node[cnt].init();
+		node[cnt].ch=&#39;Z&#39;-&#39;A&#39;;
+		for(int i=0;i&lt;n;i++)
+		{
+			scanf(&#34;%s&#34;,str);
+			insert(str);
+		}
+		scanf(&#34;%s&#34;,str);
+		int ans=solve(str);
+		if(ans==INF)
+			ans=-1;
+		printf(&#34;Case %d: %d\n&#34;,nCase,ans);
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

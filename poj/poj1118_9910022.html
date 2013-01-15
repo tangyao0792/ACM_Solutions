@@ -1,0 +1,63 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1118">1118</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 348K</td><td width=10px></td><td><b>Time:</b> 907MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+
+using namespace std;
+
+const int MAXN=710;
+
+int a[MAXN],b[MAXN];
+int x,y;
+int u,v;
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+    int n,cnt;
+    while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n)
+    {
+        for(int i=0;i&lt;n;i++)
+        {
+            scanf(&#34;%d %d&#34;,&#38;a[i],&#38;b[i]);
+        }
+        int nMax=0;
+        for(int i=0;i&lt;n;i++)
+        {
+            for(int j=i+1;j&lt;n;j++)
+            {
+                cnt=0;
+                x=a[i]-a[j];
+                y=b[i]-b[j];
+                for(int k=j+1;k&lt;n;k++)
+                {
+                  //  if(k==i || k==j)    continue;
+                    u=a[i]-a[k];
+                    v=b[i]-b[k];
+                    if(x*v==y*u)
+                        cnt++;
+                }
+                nMax=max(nMax,cnt);
+            }
+        }
+        printf(&#34;%d\n&#34;,nMax+2);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

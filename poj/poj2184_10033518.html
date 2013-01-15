@@ -1,0 +1,76 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2184">2184</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 1180K</td><td width=10px></td><td><b>Time:</b> 282MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+
+const int INF=1&lt;&lt;28;
+const int MAXN=110;
+const int MAXM=2000*MAXN;
+
+int s[MAXN],f[MAXN];
+int dp[MAXM];
+int tot[MAXM];
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+
+    int n;
+    while(scanf(&#34;%d&#34;,&#38;n)==1)
+    {
+        int sum=0;
+        for(int i=1;i&lt;=n;i++)
+        {
+            scanf(&#34;%d %d&#34;,&#38;s[i],&#38;f[i]);
+            s[i]+=1000;
+            sum+=s[i];
+        }
+
+        for(int i=1;i&lt;=sum;i++)
+        {
+            dp[i]=-INF;
+            tot[i]=0;
+        }
+        dp[0]=0;
+//dp[v]表示
+        for(int i=1;i&lt;=n;i++)
+            for(int v=sum;v&gt;=s[i];v--)
+                if(dp[v]-tot[v]*1000 &lt;
+                   dp[v-s[i]]+f[i]-(1+tot[v-s[i]])*1000)
+                {
+                    dp[v]=dp[v-s[i]]+f[i];
+                    tot[v]=tot[v-s[i]]+1;
+                }
+
+        int nMax=0;
+
+        for(int v=0;v&lt;=sum;v++)
+            if(v-tot[v]*1000&gt;=0 &#38;&#38;
+               dp[v]&gt;=0 &#38;&#38;
+               nMax&lt;dp[v]+v-tot[v]*1000)
+            {
+                nMax=dp[v]+v-tot[v]*1000;
+            }
+
+        printf(&#34;%d\n&#34;,nMax);
+    }
+
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,80 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1797">1797</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 4164K</td><td width=10px></td><td><b>Time:</b> 438MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int INF = 1&lt;&lt;28;
+int g[1010][1010];
+int v[1010], d[1010];
+int n, m;
+int nMax;
+
+int min(int a, int b){return a&lt;b?a:b;}
+int max(int a, int b){return a&gt;b?a:b;}
+
+void Dijkstra();
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int nCase, iCase;
+    scanf(&#34;%d&#34;, &#38;nCase);
+    for(iCase = 1; iCase &lt;= nCase; iCase++)
+    {
+        memset(g, 0, sizeof(g));
+        printf(&#34;Scenario #%d:\n&#34;,iCase);
+        scanf(&#34;%d %d&#34;,&#38;n, &#38;m);
+        for(int i = 1; i &lt;= m; i++)
+        {
+            int x, y, w;
+            scanf(&#34;%d %d %d&#34;,&#38;x,&#38;y,&#38;w);
+            g[x][y]=g[y][x]=w;
+        }
+        Dijkstra();
+        printf(&#34;%d\n\n&#34;,d[n]);
+    }
+    return 0;
+}
+
+void Dijkstra()
+{
+    memset(v, 0, sizeof(v));
+    for(int i = 0; i &lt;=n;i++)g[i][i]=INF;
+    for(int i = 1; i&lt;=n;i++)
+    {
+        d[i]=g[1][i];
+    }
+    for(int i = 0; i &lt; n; i++)
+    {
+        int x, m = 0;
+        for(int y = 1; y&lt;=n;y++)
+        {
+            if(!v[y] &#38;&#38; d[y]&gt;=m)
+                m = d[x=y];
+        }
+        v[x]=1;
+        for(int y = 1; y&lt;=n;y++)
+        {
+            if( !v[y]&#38;&#38;d[y]&lt;min(d[x],g[x][y]))
+            {
+                d[y] = min(d[x],g[x][y]);
+            }
+        }
+    }
+}
+</pre>
+</ul>
+</body></html>

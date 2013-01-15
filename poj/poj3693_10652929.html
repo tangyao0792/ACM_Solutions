@@ -1,0 +1,212 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3693">3693</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 9016K</td><td width=10px></td><td><b>Time:</b> 594MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;cmath&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+//INIT: n = strlen(s) + 1;
+//CALL: makesa(); lcp();SparseTable();get(x,y)得到lcp
+//注: height[i] = lcp(sa[i], sa[i-1])
+//sa[i]表示排名为i的后缀是谁，rank[i]表示从s[i]开始的后缀排名是多少
+//rank 0....n-1   sa,height 1...n-1
+//tmp 和top用于基数排序，大小因要排序的数的范围而定
+//
+
+const int N = 100100;
+
+char s[N];                          // N &gt; 256
+int n, sa[N], height[N], rank[N], tmp[N], top[N];
+int st[20][N];
+int length[N];
+
+void SparseTable()
+{
+	for(int i=1;i&lt;n;i++)
+		st[0][i]=height[i];
+	for(int j=1;(1&lt;&lt;j) &lt;n;j++)
+		for(int i=0; i+(1&lt;&lt;(j-1)) &lt;n; i++)
+			st[j][i]=min(st[j-1][i],st[j-1][i+(1&lt;&lt;(j-1))]);
+}
+
+void swap(int &#38;x,int &#38;y)
+{
+	if(x&gt;y)
+	{
+		int t=x;
+		x=y;
+		y=t;
+	}
+}
+
+int get(int x,int y)
+{
+	x=rank[x];y=rank[y];
+	swap(x,y);
+	x++;
+	int k=int(log(double(y-x+1))/log(2.0));
+	return min(st[k][x],st[k][y-(1&lt;&lt;k)+1]);
+}
+void makesa()
+{                       // O(N * log N)
+	int i, j, len, na;
+	na = (n &lt; 256 ? 256 : n);
+	memset(top, 0, na * sizeof(int));
+	for (i = 0; i &lt; n ; i++)
+		top[ rank[i] = s[i] &#38; 0xff ]++;
+	for (i = 1; i &lt; na; i++)
+		top[i] += top[i - 1];
+	for (i = 0; i &lt; n ; i++)
+		sa[ --top[ rank[i] ] ] = i;
+	for (len = 1; len &lt; n; len &lt;&lt;= 1)
+	{
+		for (i = 0; i &lt; n; i++)
+		{
+			j = sa[i] - len;
+			if (j &lt; 0) j += n;
+			tmp[ top[ rank[j] ]++ ] = j;
+		}
+		sa[ tmp[ top[0] = 0 ] ] = j = 0;
+		for (i = 1; i &lt; n; i++)
+		{
+			if (rank[ tmp[i] ] != rank[ tmp[i-1] ] ||
+					rank[ tmp[i]+len ]!=rank[ tmp[i-1]+len ])
+				top[++j] = i;
+			sa[ tmp[i] ] = j;
+		}
+		memcpy(rank, sa , n * sizeof(int));
+		memcpy(sa  , tmp, n * sizeof(int));
+		if (j &gt;= n - 1) break;
+	}
+}
+
+void make_height()
+{
+	int i, j, k;
+	for (j = rank[height[i=k=0]=0]; i &lt; n - 1; i++, k++)
+		while (k &gt;= 0 &#38;&#38; s[i] != s[ sa[j-1] + k ])
+			height[j] = (k--), j = rank[ sa[j] + 1 ];								}
+
+void cmp(int &#38;st,int &#38;end,int &#38;times,int l,int r,int t)
+{
+    if(t&lt;times) return;
+    if(t&gt;times)
+    {
+        st=l;
+        end=r;
+        times=t;
+        return;
+    }
+    int size=min(end-st,r-l)+1;
+	for(int i=0;i&lt;size;i++)
+		if(s[st+i]&gt;s[l+i])
+		{
+			st=l;
+			end=r;
+			return;
+		}
+		else if(s[st+i]&lt;s[l+i])
+        {
+            return;
+		}
+    if(end-st&gt;r-l)
+    {
+        st=l;
+        end=r;
+    }
+}
+void solve()
+{
+	n=strlen(s)+1;
+
+	makesa();
+	make_height();
+	SparseTable();
+	int st=0,end=0,times=0;
+	int cnt=0;
+
+	for(int len=n/2+1;len&gt;=1;len--)
+	{
+		for(int i=0;i+len&lt;n-1;i+=len)
+		{
+			int l=get(i,i+len);
+
+            int x=(len-l%len)%len;
+            int tmp=get(i-x,i-x+len);
+            if(tmp&lt;len) continue;
+            int t=(x+len+tmp)/len;
+            if(t&gt;times)
+            {
+                times=t;
+                cnt=0;
+            }
+            if(t==times)
+            {
+                length[cnt++]=len;
+            }
+		}
+	}
+    bool flag=true;
+	for(int i=1;i&lt;n &#38;&#38; flag;i++)
+	{
+	    int a=sa[i];                //保证字典序
+	    for(int j=0;j&lt;cnt;j++)
+	    {
+	        if(a+length[j]&gt;=n  )    continue;
+	        int l=get(a,a+length[j]);
+	        if((l+length[j])/length[j]&gt;=times)
+	        {
+	            st=a;
+	            end=a+length[j]*times-1;
+	            flag=false;
+	            break;
+	        }
+
+	    }
+	}
+	if(cnt==0)
+	{
+	    char ch=&#39;z&#39;;
+	    for(int i=0;s[i];i++)
+            ch=min(ch,s[i]);
+        printf(&#34;%c\n&#34;,ch);
+        return;
+	}
+
+	for(int i=st;i&lt;=end;i++)
+		printf(&#34;%c&#34;,s[i]);
+	puts(&#34;&#34;);
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+
+	int nCase=1;
+	while(~scanf(&#34;%s&#34;,s))
+	{
+		if(s[0]==&#39;#&#39;)	break;
+		printf(&#34;Case %d: &#34;,nCase++);
+		solve();
+	}
+
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

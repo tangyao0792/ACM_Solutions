@@ -1,0 +1,109 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2117">2117</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 2244K</td><td width=10px></td><td><b>Time:</b> 672MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;cstring&gt;
+#include&lt;vector&gt;
+
+using namespace std;
+
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=10001;
+
+vector&lt;int&gt; adj[MAXN];
+int dfn[MAXN],low[MAXN],vis[MAXN],num[MAXN];
+//vis[i]==1 means i is in stack
+//vis[i]==2 means i is finished
+
+int n,m,nIndex;
+
+void tarjan(int u, int r, int fa)
+{
+    dfn[u]=low[u]=nIndex++;
+    vis[u]=1;
+    int t=adj[u].size();
+    int son=0;
+    for(int i=0;i&lt;t;i++)
+    {
+        int v=adj[u][i];
+        if( v ==fa) continue;
+        if(vis[v]==0)
+        {
+            tarjan(v, r, u);
+            low[u]=min(low[u],low[v]);
+            son++;
+            if((r==u &#38;&#38; son&gt;1) || (r!=u &#38;&#38; dfn[u]&lt;=low[v]))
+                num[u]++;
+        }
+        else if (vis[v]==1)
+        {
+            low[u]=min(low[u],dfn[v]);
+        }
+    }
+    vis[u]=2;
+}
+
+int solve()
+{
+    memset(vis,0,sizeof(vis));
+    memset(num,0,sizeof(num));
+    nIndex=1;
+    int cnt=0;
+    for(int i=0;i&lt;n;i++)
+        if(!vis[i])
+        {
+            cnt++;          //undirected graph&#39;s nscc
+            tarjan(i, i, -1);
+           // num[i]++;
+        }
+
+    int nMax=0;
+    for(int i=0;i&lt;n;i++)
+        nMax=max(nMax,num[i]);
+    return nMax+cnt;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    while(scanf(&#34;%d %d&#34;,&#38;n,&#38;m)==2 &#38;&#38; !(!n &#38;&#38; !m))
+    {
+        if(m==0)
+        {
+            printf(&#34;%d\n&#34;,n-1);
+            continue;
+        }
+        for(int i=0;i&lt;n;i++)
+        {
+            adj[i].clear();
+            vis[i]=0;
+        }
+        for(int i=0;i&lt;m;i++)
+        {
+            int x,y;
+            scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+            adj[x].push_back(y);
+            adj[y].push_back(x);
+        }
+        printf(&#34;%d\n&#34;,solve());
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

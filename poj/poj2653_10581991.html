@@ -1,0 +1,101 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2653">2653</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 3848K</td><td width=10px></td><td><b>Time:</b> 594MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;cstring&gt;
+
+using namespace std;
+
+const int MAXN=100010;
+
+#define eps 1e-8
+#define zero(x) (((x)&gt;0?(x):-(x))&lt;eps)
+
+struct point{double x,y;};
+
+struct line
+{
+	point a,b;
+}l[MAXN];
+
+int q[2][MAXN],q2[MAXN];
+int f[2],r[2];
+int n;
+
+
+double xmult(point p1,point p2,point p0){
+return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+
+int dots_inline(point p1,point p2,point p3){
+return zero(xmult(p1,p2,p3));
+}
+int dot_online_in(point p,line l){
+return zero(xmult(p,l.a,l.b))&#38;&#38;(l.a.x-p.x)*(l.b.x-p.x)&lt;eps&#38;&#38;(l.a.y-p.y)*(l.b.y-p.y)&lt;eps;
+}
+
+int same_side(point p1,point p2,line l){
+return xmult(l.a,p1,l.b)*xmult(l.a,p2,l.b)&gt;eps;
+}
+
+int intersect_in(line u,line v){
+if (!dots_inline(u.a,u.b,v.a)||!dots_inline(u.a,u.b,v.b))
+return !same_side(u.a,u.b,v)&#38;&#38;!same_side(v.a,v.b,u);
+return dot_online_in(u.a,v)||dot_online_in(u.b,v)||dot_online_in(v.a,u)||dot_online_in(v.b,u);
+}
+
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n)
+	{
+	    f[0]=f[1]=r[0]=r[1]=0;
+		for(int i=0;i&lt;n;i++)
+		{
+		    scanf(&#34;%lf %lf %lf %lf&#34;,&#38;l[i].a.x,&#38;l[i].a.y,&#38;l[i].b.x,&#38;l[i].b.y);
+            int get=i%2;
+            int set=(i+1)%2;
+            f[set]=r[set]=0;
+            while(f[get]!=r[get])
+            {
+                int top=q[get][r[get]++];
+                if(!intersect_in(l[top],l[i]))
+                {
+                    q[set][f[set]++]=top;
+                }
+            }
+            q[set][f[set]++]=i;
+		}
+
+		printf(&#34;Top sticks: &#34;);
+        int get=(n)%2;
+        int top=q[get][r[get]++];
+        printf(&#34;%d&#34;,top+1);
+
+        while(f[get]!=r[get])
+        {
+            int top=q[get][r[get]++];
+            printf(&#34;, %d&#34;,top+1);
+        }
+        printf(&#34;.\n&#34;);
+	}
+
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

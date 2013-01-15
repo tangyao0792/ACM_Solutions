@@ -1,0 +1,127 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3468">3468</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 5584K</td><td width=10px></td><td><b>Time:</b> 3079MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int MAXN=100100;
+typedef long long LL;
+
+LL t[MAXN*4];
+LL add[MAXN*4];
+
+void PushUp(int pos,int l,int mid,int r)
+{
+    t[pos]=add[pos]*(r-l+1)
+        +add[pos&lt;&lt;1]*(mid-l+1)
+        +add[pos&lt;&lt;1|1]*(r-mid)
+        +t[pos&lt;&lt;1]
+        +t[pos&lt;&lt;1|1];
+}
+void PushDown(int pos)
+{
+    add[pos&lt;&lt;1]+=add[pos];
+    add[pos&lt;&lt;1|1]+=add[pos];
+    add[pos]=0;
+}
+void build(int l,int r,int pos)
+{
+    if(l==r)
+    {
+        scanf(&#34;%lld&#34;,&#38;t[pos]);
+        return;
+    }
+    int mid=(l+r)&gt;&gt;1;
+
+    build(l,mid,pos&lt;&lt;1);
+    build(mid+1,r,pos&lt;&lt;1|1);
+    PushUp(pos,l,mid,r);
+}
+
+void update(int x,int y,LL z,int l,int r,int pos)
+{
+    if(x&gt;r || y&lt;l)
+        return;
+    if(x&lt;=l &#38;&#38; y&gt;=r)
+    {
+        add[pos]+=z;
+        return;
+    }
+    if(l==r)    return;
+    PushDown(pos);
+    int mid=(l+r)&gt;&gt;1;
+
+    if(x&lt;=mid)
+        update(x,y,z,l,mid,pos&lt;&lt;1);
+    if(y&gt;mid)
+        update(x,y,z,mid+1,r,pos&lt;&lt;1|1);
+
+    PushUp(pos,l,mid,r);
+}
+
+LL query(int x,int y,int l,int r,int pos)
+{
+    if(x&lt;=l &#38;&#38; y&gt;=r)
+        return t[pos]+add[pos]*(r-l+1);
+
+    if(x&gt;r || y&lt;l)
+        return 0;
+
+    int mid=(l+r)&gt;&gt;1;
+
+    PushDown(pos);
+
+    LL ans=0;
+    if(x&lt;=mid)
+        ans+=query(x,y,l,mid,pos&lt;&lt;1);
+    if(y&gt;mid)
+        ans+=query(x,y,mid+1,r,pos&lt;&lt;1|1);
+    PushUp(pos,l,mid,r);
+    return ans;
+
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int n,q;
+    char op[10];
+    while(scanf(&#34;%d %d&#34;,&#38;n,&#38;q)==2)
+    {
+        memset(add,0,sizeof(add));
+        build(1,n,1);
+        for(int i=0;i&lt;q;i++)
+        {
+            scanf(&#34;%s&#34;,op);
+            if(op[0]==&#39;Q&#39;)
+            {
+                int x,y;
+                scanf(&#34;%d %d&#34;,&#38;x,&#38;y);
+                printf(&#34;%lld\n&#34;,query(x,y,1,n,1));
+            }
+            else
+            {
+                int x,y;
+                LL z;
+                scanf(&#34;%d %d %lld&#34;,&#38;x,&#38;y,&#38;z);
+                update(x,y,z,1,n,1);
+            }
+        }
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

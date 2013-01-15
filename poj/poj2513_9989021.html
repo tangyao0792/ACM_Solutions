@@ -1,0 +1,107 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2513">2513</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 59316K</td><td width=10px></td><td><b>Time:</b> 532MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int MAXN=250010;
+const int MAXM=15;
+const int tk=26,tb=&#39;a&#39;;
+
+int top;
+int tree[MAXN*MAXM][tk+1];
+int d[MAXN*2],p[MAXN*2];
+
+void init()
+{
+    top=1;
+    memset(tree[0],0,sizeof(tree[0]));
+}
+
+int sear(char *s)
+{
+    for(int rt=0;(rt=tree[rt][*s-tb]);)
+        if(*(++s)==0)
+            return tree[rt][tk];
+    return -1;
+}
+
+void insert(char*s, int rank)
+{
+    int rt,nxt;
+    for(rt=0;*s;rt=nxt,s++)
+    {
+        nxt=tree[rt][*s-tb];
+        if(nxt==0)
+        {
+            tree[rt][*s-tb]=nxt=top;
+            memset(tree[top],0,sizeof(tree[top]));
+            top++;
+        }
+    }
+    tree[rt][tk]=rank;
+}
+int find(int x){return p[x]==-1?x:(p[x]=find(p[x]));}
+void unit(int x,int y)
+{
+    int px=find(x),py=find(y);
+    if(px!=py)
+        p[px]=py;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    char a[MAXM],b[MAXM];
+    int cnt=0;
+    init();
+    memset(p,-1,sizeof(p));
+    memset(d,0,sizeof(d));
+    while(scanf(&#34;%s %s&#34;,a,b)==2)
+    {
+        int pa=sear(a),pb=sear(b);
+        if(pa==-1)
+        {
+            insert(a,cnt);
+            pa=cnt++;
+        }
+        if(pb==-1)
+        {
+            insert(b,cnt);
+            pb=cnt++;
+        }
+        unit(pa,pb);
+        d[pa]++;d[pb]++;
+    }
+    bool flag=true;
+    int p0=find(0);
+    for(int i=1;i&lt;cnt &#38;&#38; flag;i++)
+    {
+        if(p0!=find(i)) flag=false;
+    }
+    int cnte=0;
+    for(int i=0;i&lt;cnt &#38;&#38; flag;i++)
+    {
+        if(d[i]%2==1)   cnte++;
+    }
+    if(flag &#38;&#38; (cnte==0 || cnte==2))
+        printf(&#34;Possible\n&#34;);
+    else
+        printf(&#34;Impossible\n&#34;);
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

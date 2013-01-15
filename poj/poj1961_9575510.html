@@ -1,0 +1,69 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_c.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1961">1961</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 5284K</td><td width=10px></td><td><b>Time:</b> 500MS</td></tr>
+<tr><td><b>Language:</b> GCC</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_c" style="font-family:Courier New,Courier,monospace">#include&lt;stdio.h&gt;
+#include&lt;string.h&gt;
+void make_next();
+    char a[1000010];
+    int next[1000010];
+
+int main()
+{
+
+    int n;
+    int count = 0;
+    while( scanf(&#34;%d&#34;,&#38;n) &gt; 0 &#38;&#38; n != 0)
+    {
+        count++;
+        scanf(&#34;%s&#34;,a);
+        printf(&#34;Test case #%d\n&#34;,count);
+        make_next();
+        int length = strlen(a);
+        for(int i = 1; i &lt; length+1; i++)
+        {
+            if(((i) %( i - next[i])== 0 &#38;&#38;(next[i] != 0)))
+            {
+                printf(&#34;%d %d\n&#34;,i,(i)/(i-next[i]));
+            }
+        }
+        printf(&#34;\n&#34;);
+    }
+    return 0;
+}
+
+void make_next()
+{
+    int length = strlen(a);
+    next[0] = -1;
+    int i = 0;
+    int j = -1;
+    while(i &lt; length)
+    {
+        if(j == -1 || a[i] == a[j])
+        {
+            i++;
+            j++;
+            next[i] = j;
+        }
+        else
+        {
+            j = next[j];
+        }
+    }
+    i++;
+    j++;
+    next[i] = j;
+}
+</pre>
+</ul>
+</body></html>

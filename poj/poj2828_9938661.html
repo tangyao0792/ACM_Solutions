@@ -1,0 +1,111 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2828">2828</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 8904K</td><td width=10px></td><td><b>Time:</b> 3188MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int MAXN=200010;
+
+struct Tree
+{
+    int l,r,len;
+}T[MAXN*5];
+
+int n,arr[MAXN],p[MAXN],v[MAXN];
+
+void build(int s,int t,int pos)
+{
+    T[pos].l=s;
+    T[pos].r=t;
+    T[pos].len=t-s+1;
+
+    if(s==t)    return;
+
+    int mid=(s+t)&gt;&gt;1;
+
+    build(s,mid,pos*2);
+    build(mid+1,t,pos*2+1);
+}
+
+int find(int p,int pos)
+{
+    T[pos].len--;
+    if(T[pos].l==T[pos].r)
+        return T[pos].l;
+    if(T[pos*2].len&lt;p)
+    {
+        return find(p-T[pos*2].len,pos*2+1);
+    }
+
+    return    find(p,pos*2);
+}
+inline void readint(int &#38;ret)
+{
+	char c;
+	do {
+	    	c = getchar();
+	} while(c &lt; &#39;0&#39; || c &gt; &#39;9&#39;);
+
+	ret = c - &#39;0&#39;;
+	while((c=getchar()) &gt;= &#39;0&#39; &#38;&#38; c &lt;= &#39;9&#39;)
+		ret = ret * 10 + ( c - &#39;0&#39; );
+}
+char s[100];int sp=0;
+inline void outputint(int &#38;ret)
+{
+    sp=0;
+    while(ret)
+    {
+        s[sp++]=ret%10+&#39;0&#39;;
+        ret/=10;
+    }
+    for(int i=sp-1;i&gt;=0;i--)
+        putchar(s[i]);
+}
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    while(scanf(&#34;%d&#34;,&#38;n)==1)
+    {
+        build(1,n,1);
+
+        for(int i=0;i&lt;n;i++)
+        {
+            readint(p[i]);readint(v[i]);
+//            scanf(&#34;%d %d&#34;,&#38;p[i],&#38;v[i]);
+        }
+        for(int i=n-1;i&gt;=0;i--)
+        {
+            arr[find(p[i]+1,1)]=v[i];
+        }
+        printf(&#34;%d&#34;,arr[1]);
+        for(int i=2;i&lt;=n;i++)
+            printf(&#34; %d&#34;,arr[i]);
+
+        printf(&#34;\n&#34;);
+
+//        outputint(arr[1]);
+//        for(int i=2;i&lt;=n;i++)
+//        {
+//            putchar(&#39; &#39;);
+//            outputint(arr[i]);
+//        }
+//        puts(&#34;&#34;);
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

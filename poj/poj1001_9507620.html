@@ -1,0 +1,91 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_c.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1001">1001</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 164K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_c" style="font-family:Courier New,Courier,monospace">#include&lt;stdio.h&gt;
+
+void main()
+{
+	char input[6];
+	int result[125];
+	int temp[125];
+	int mul[5];
+	int n, length,count;						//length表示输入的乘数小数点后有哦几位，count表示结果小数点后有多少无用的0
+	int i, j, k, of;
+	while(scanf(&#34;%s %d&#34;, input, &#38;n) != EOF)
+	{
+		
+		for(i = 0; i &lt; 125; i++)
+		{
+			result[i] = temp[i] = 0;
+		}
+		j = i = 0;
+		while(i &lt; 6)
+		{
+			if(input[i] == &#39;.&#39;)
+			{
+				length = 5 - i;
+				i++;
+				continue;
+			}
+			result[120+j] = mul[j] = input[i++] - 48;
+			j++;
+		}
+
+		for(i = 1; i &lt; n; i++)
+		{
+			for(j = 4; j &gt; -1; j--)
+			{
+				for(k = 124, of = 0; j+k-4 &gt; -1; k--)
+				{
+					temp[j+k-4] += result[k] * mul[j] + of;
+					of = temp[j+k-4] / 10;
+					temp[j+k-4] = temp[j+k-4] % 10;
+				}
+			}
+			for(k = 0; k &lt; 125; k++)
+			{
+				result[k] = temp[k];
+				temp[k] = 0;
+			}
+
+		}
+		for(i = 124,count = 0; i &gt; -1 &#38;&#38; i &gt; 124-n*length; i--)		//计算结果的小数位最后0的数量
+		{
+			if( result[i] == 0)
+			{
+				count++;
+			}
+			else
+			{
+				break;
+			}
+		}
+		i = 0;
+		while(result[i] == 0 &#38;&#38; i &lt; 124 - n* length+1)
+		{
+			i++;
+		}
+
+		for(; i &lt; 125-count; i++)
+		{
+			if(i == 124-n*length+1)
+			{
+				printf(&#34;.&#34;);
+			}
+			printf(&#34;%d&#34;, result[i]);
+		}
+		printf(&#34;\n&#34;);
+	}
+}</pre>
+</ul>
+</body></html>

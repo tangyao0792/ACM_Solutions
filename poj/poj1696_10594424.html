@@ -1,0 +1,96 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1696">1696</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 316K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include &lt;math.h&gt;
+#include&lt;cstring&gt;
+#define eps 1e-8
+#define zero(x) (((x)&gt;0?(x):-(x))&lt;eps)
+
+const int MAXN=55;
+
+struct point{double x,y;}p[MAXN];
+struct line{point a,b;};
+
+double xmult(point p1,point p2,point p0){
+return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+
+double distances(point p1,point p2){
+return sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
+}
+
+
+
+int n;
+int number[MAXN];
+int vis[MAXN];
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	int t;
+	scanf(&#34;%d&#34;,&#38;t);
+	while(t--)
+	{
+		scanf(&#34;%d&#34;,&#38;n);
+		int pos=0;
+		for(int i=0;i&lt;n;i++)
+		{
+			scanf(&#34;%d %lf %lf&#34;,&#38;number[i],&#38;p[i].x,&#38;p[i].y);
+			if(p[pos].y&gt;p[i].y)	pos=i;
+		}
+
+		printf(&#34;%d %d&#34;,n,number[pos]);
+		memset(vis,0,sizeof(vis));
+		vis[pos]=1;
+
+		point last=p[pos];
+
+		for(int i=1;i&lt;n;i++)
+		{
+			double dist;
+
+			for(int j=0;j&lt;n;j++)
+				if(!vis[j])
+				{
+					pos=j;
+					break;
+				}
+			for(int j=pos+1;j&lt;n;j++)
+			{
+				if(vis[j])continue;
+
+
+				double tmp=xmult(p[pos],p[j],last);
+				double tmpdist=distances(last,p[j]);
+				if(tmp&lt;-eps || (zero(tmp) &#38;&#38; tmpdist&lt;dist))
+				{
+					pos=j;
+					dist=tmpdist;
+				}
+			}
+			printf(&#34; %d&#34;,number[pos]);
+			vis[pos]=1;
+			last=p[pos];
+		}
+        printf(&#34;\n&#34;);
+	}
+
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

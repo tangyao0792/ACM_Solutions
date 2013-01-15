@@ -1,0 +1,166 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1873">1873</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 808K</td><td width=10px></td><td><b>Time:</b> 63MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include &lt;stdlib.h&gt;
+#include&lt;cstring&gt;
+#include&lt;cmath&gt;
+#define eps 1e-8
+#define zero(x) (((x)&gt;0?(x):-(x))&lt;eps)
+
+int n,cnt;
+struct point{double x,y;}p[20],pt[20],convex[20];
+double dp[1&lt;&lt;17];
+double extra[1&lt;&lt;17];
+double v[20],l[20];
+int num[1&lt;&lt;17];
+
+double distances(point p1,point p2){
+return sqrt((p1.x-p2.x)*(p1.x-p2.x)+(p1.y-p2.y)*(p1.y-p2.y));
+}
+
+//计算 cross product (P1-P0)x(P2-P0)
+double xmult(point p1,point p2,point p0){
+return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+//graham 算法顺时针构造包含所有共线点的凸包,O(nlogn)
+point p1,p2;
+int graham_cp(const void* a,const void* b){
+double ret=xmult(*((point*)a),*((point*)b),p1);
+return zero(ret)?(xmult(*((point*)a),*((point*)b),p2)&gt;0?1:-1):(ret&gt;0?1:-1);
+}
+void _graham(int n,point* p,int&#38; s,point* ch){
+int i,k=0;
+for (p1=p2=p[0],i=1;i&lt;n;p2.x+=p[i].x,p2.y+=p[i].y,i++)
+if (p1.y-p[i].y&gt;eps||(zero(p1.y-p[i].y)&#38;&#38;p1.x&gt;p[i].x))
+p1=p[k=i];
+p2.x/=n,p2.y/=n;
+p[k]=p[0],p[0]=p1;
+qsort(p+1,n-1,sizeof(point),graham_cp);
+for (ch[0]=p[0],ch[1]=p[1],ch[2]=p[2],s=i=3;i&lt;n;ch[s++]=p[i++])
+for (;s&gt;2&#38;&#38;xmult(ch[s-2],p[i],ch[s-1])&lt;-eps;s--);
+}
+//构造凸包接口函数,传入原始点集大小 n,点集 p(p 原有顺序被打乱!)
+//返回凸包大小,凸包的点在 convex 中
+//参数 maxsize 为 1 包含共线点,为 0 不包含共线点,缺省为 1
+//参数 clockwise 为 1 顺时针构造,为 0 逆时针构造,缺省为 1
+//在输入仅有若干共线点时算法不稳定,可能有此类情况请另行处理!
+//不能去掉点集中重合的点
+point temp[20];
+int graham(int n,point* p,point* convex,int maxsize=1,int dir=1){
+//point* temp=new point[n];
+int s,i;
+_graham(n,p,s,temp);
+for (convex[0]=temp[0],n=1,i=(dir?1:(s-1));dir?(i&lt;s):i;i+=(dir?1:-1))
+if (maxsize||!zero(xmult(temp[i-1],temp[i],temp[(i+1)%s])))
+convex[n++]=temp[i];
+//delete []temp;
+return n;
+}
+
+double getlength(int n,point *p)
+{
+    if(n==1)    return 0;
+	double ans=0;
+	for(int i=0;i&lt;n;i++)
+		ans+=distances(p[i],p[(i+n+1)%n]);
+	return ans;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	int nCase=1;
+	while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n)
+	{
+		printf(&#34;Forest %d\n&#34;,nCase++);
+		for(int i=0;i&lt;n;i++)
+		{
+			scanf(&#34;%lf %lf %lf %lf&#34;,&#38;p[i].x,&#38;p[i].y,&#38;v[i],&#38;l[i]);
+		}
+		int pp=-1;
+		int size=1&lt;&lt;(n);
+		for(int i=1;i&lt;size;i++)
+		{
+			cnt=0;
+			double val=0;
+			double len=0;
+			int ncnt=0;
+			bool flag=false;
+			for(int j=0;j&lt;n;j++)
+			{
+				if(!(i&#38;(1&lt;&lt;j)))
+					pt[cnt++]=p[j];
+				else
+				{
+					ncnt++;
+					len+=l[j];
+					val+=v[j];
+					if(pp!=-1 &#38;&#38; val&gt;dp[pp]+eps)
+					{
+					    flag=true;
+					    break;
+					}
+				}
+			}
+			if(flag)    continue;
+			if(cnt==0)  continue;
+
+			int tmp;
+			if(cnt==2 || cnt==1)
+			{
+			    for(int k=0;k&lt;cnt;k++)
+                    convex[k]=pt[k];
+                tmp=cnt;
+			}
+			else
+                tmp=graham(cnt,pt,convex);
+			double dist=getlength(tmp,convex);
+			dp[i]=val;
+			extra[i]=len-dist;
+			num[i]=ncnt;
+			if(pp==-1 &#38;&#38; extra[i]&gt;eps)
+			{
+			    pp=i;
+			    continue;
+			}
+			if(extra[i]&lt;-eps)   continue;
+			if(dp[pp]&gt;dp[i]+eps)
+			{
+			    pp=i;
+			}
+			else if(dp[pp]&lt;dp[i]-eps){}
+			else
+			{
+			    if(num[pp]&gt;num[i])
+                    pp=i;
+			}
+		}
+
+		printf(&#34;Cut these trees:&#34;);
+		for(int i=0;i&lt;n;i++)
+		{
+			if(pp&#38;(1&lt;&lt;i))
+				printf(&#34; %d&#34;,i+1);
+		}
+		printf(&#34;\nExtra wood: %.2f\n\n&#34;,extra[pp]);
+
+	}
+
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,123 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3347">3347</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 6500K</td><td width=10px></td><td><b>Time:</b> 47MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include &lt;math.h&gt;
+#include&lt;iostream&gt;
+#include&lt;algorithm&gt;
+
+using namespace std;
+
+#define eps 1e-8
+#define zero(x) (((x)&gt;0?(x):-(x))&lt;eps)
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN=55;
+const int times=1000;
+const int MAXL=30*50*times+100;
+const double two=sqrt(2.0);
+
+int r[MAXN];
+
+double s[MAXN];
+double b[MAXN];
+int flag[MAXL];
+bool visible[MAXN];
+
+int n;
+
+double getpos(int p)
+{
+	double ans=0;
+	for(int i=0;i&lt;p;i++)
+	{
+		double tmp=min(s[i],s[p]);
+		ans=max(ans,b[i]+tmp*two);
+	}
+	return ans;
+}
+
+bool comp(int a,int b)
+{
+	return s[a]&gt;s[b];
+}
+
+void paint(int i)
+{
+	int l=int((b[i]-s[i]/two)*times);
+	int r=int((b[i]+s[i]/two)*times);
+	for(int j=l;j&lt;=r;j++)
+	{
+		if(flag[j]==-1)
+		{
+			flag[j]=i;
+		}
+	}
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n)
+	{
+		for(int i=0;i&lt;n;i++)
+		{
+			scanf(&#34;%lf&#34;,&#38;s[i]);
+			r[i]=i;
+		}
+
+		b[0]=s[0]/two;
+		double right=0;
+		for(int i=1;i&lt;n;i++)
+		{
+			b[i]=getpos(i);
+			right=max(right,b[i]+s[i]/two);
+		}
+		memset(flag,-1,sizeof(flag));
+		memset(visible,0,sizeof(visible));
+
+		sort(r,r+n,comp);
+		for(int i=0;i&lt;n;i++)
+		{
+			paint(r[i]);
+		}
+		int maxr=int(right*times);
+		for(int i=0;i&lt;=maxr;i++)
+		{
+			if(flag[i]!=-1)
+			{
+				visible[flag[i]]=true;
+			}
+		}
+		int cnt=0;
+		for(int i=0;i&lt;n;i++)
+		{
+			if(visible[i])
+			{
+				if(cnt)
+					printf(&#34; &#34;);
+				cnt++;
+				printf(&#34;%d&#34;,i+1);
+			}
+		}
+		printf(&#34;\n&#34;);
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

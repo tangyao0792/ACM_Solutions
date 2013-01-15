@@ -1,0 +1,81 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=3974">3974</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 11156K</td><td width=10px></td><td><b>Time:</b> 235MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+const int MAXN = 1000100;
+char s[MAXN];
+char str[MAXN*2];
+int p[MAXN*2];
+int len,n;
+
+
+int manacher(char *s) 
+{  
+	len=strlen(s);
+	str[0]=&#39;@&#39;;
+	str[1]=&#39;#&#39;;
+	n=2;
+	for(int j=0;j&lt;len;j++)
+	{
+		str[n++]=s[j];
+		str[n++]=&#39;#&#39;;
+	}
+	str[n]=0;
+
+    int mx = 0;  
+    int id;  
+    for (int i = 1; i &lt; n; i++) 
+	{
+		if (mx &gt; i)
+		{ 
+			p[i] = min(p[2*id - i], mx - i); 
+		}
+		else 
+			p[i] = 1;  
+		for (; str[i - p[i]] == str[i + p[i]]; p[i]++)
+			;
+		if (p[i] + i &gt; mx)
+		{  
+			mx = p[i] + i;  
+	        id = i;  
+		 } 
+	 } 
+	 int ans=0;
+	 for(int i=1;i&lt;n;i++)
+	 {
+	 	ans=max(ans,p[i]);
+	 }
+	 return ans-1;
+}  
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	int nCase=1;
+	while(~scanf(&#34;%s&#34;,s))
+	{
+		if(strcmp(s,&#34;END&#34;)==0)
+			break;
+		printf(&#34;Case %d: %d\n&#34;,nCase++,manacher(s));	
+	}
+	return 0;
+}</pre>
+</ul>
+</body></html>

@@ -1,0 +1,100 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1318">1318</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 200K</td><td width=10px></td><td><b>Time:</b> 16MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;iostream&gt;
+#include&lt;string.h&gt;
+#include&lt;stdlib.h&gt;
+
+using namespace std;
+
+char input[101][7];
+char dic[101][7];
+char scr[7];
+const char signal[7] = &#34;XXXXXX&#34;;
+
+int cmp(const void *a,const void * b);
+
+int main()
+{
+    int i, j, k, l;
+    int length;
+    int flag;
+    char temp;
+    i = 0;
+    while(cin &gt;&gt; input[i] &#38;&#38; strcmp(input[i],signal) != 0)
+    {
+        i++;
+    }
+    qsort(input,i, sizeof(char) * 7,cmp);
+    for(j = 0; j &lt; i; j++)
+    {
+        strcpy(dic[j],input[j]);
+        length = strlen(input[j]);
+
+        for(k = 0; k &lt; length; k++)
+        {
+            for(l = 0; l &lt; length -1 -k; l++)
+            {
+                if(dic[j][l] &gt; dic[j][l+1])
+                {
+                    temp = dic[j][l];
+                    dic[j][l] = dic[j][l+1];
+                    dic[j][l+1] = temp;
+                }
+            }
+        }
+    }
+    while(cin &gt;&gt; scr &#38;&#38; strcmp(scr,signal) != 0)
+    {
+        length = strlen(scr);
+        for(k = 0; k &lt; length; k++)
+        {
+            for(l = 0; l &lt; length -1 -k; l++)
+            {
+                if(scr[l] &gt; scr[l+1])
+                {
+                    temp = scr[l];
+                    scr[l] = scr[l+1];
+                    scr[l+1] = temp;
+                }
+            }
+        }
+
+
+        flag = 0;
+        for(k = 0; k &lt; i; k++)
+        {
+            if(strcmp(scr,dic[k]) == 0)
+            {
+                flag = 1;
+                cout &lt;&lt; input[k] &lt;&lt; endl;
+            }
+        }
+        if(flag == 0)
+        {
+            cout &lt;&lt; &#34;NOT A VALID WORD&#34; &lt;&lt; endl;
+        }
+        cout &lt;&lt; &#34;******&#34; &lt;&lt; endl;
+
+    }
+
+    return 0;
+}
+
+int cmp(const void *a, const void *b)
+{
+    return strcmp((char*)(a),(char*)(b));
+}
+</pre>
+</ul>
+</body></html>

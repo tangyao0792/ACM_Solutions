@@ -1,0 +1,55 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1298">1298</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 204K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;iostream&gt;
+#include&lt;string.h&gt;
+using namespace std;
+
+int main()
+{
+    const char end_of_input[] = &#34;ENDOFINPUT&#34;;
+    const char end_a_line[] = &#34;END&#34;;
+    const char start_a_line[] = &#34;START&#34;;
+    int length;
+    char input[1000];
+
+    while( cin &gt;&gt; input &#38;&#38; strcmp(input, end_of_input) != 0)
+    {
+        if(strcmp(input, start_a_line) == 0)
+        {
+            continue;
+        }
+        if(strcmp(input, end_a_line) == 0)
+        {
+            cout &lt;&lt; endl;
+            continue;
+        }
+        length = strlen( input);
+        for(int i = 0 ; i &lt; length; i++)
+        {
+            if(input[i] &gt; &#39;A&#39;-1 &#38;&#38; input[i] &lt; &#39;Z&#39;+1)
+            {
+                input[i] = input[i] - 5;
+                if(input[i] &lt; &#39;A&#39;)
+                {
+                    input[i] +=26;
+                }
+            }
+        }
+        cout &lt;&lt; input &lt;&lt; &#34; &#34;;
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

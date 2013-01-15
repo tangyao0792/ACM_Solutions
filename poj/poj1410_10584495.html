@@ -1,0 +1,95 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1410">1410</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 388K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include &lt;math.h&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+#define eps 1e-8
+#define zero(x) (((x)&gt;0?(x):-(x))&lt;eps)
+
+struct point{double x,y;};
+struct line{point a,b;};
+
+double xmult(point p1,point p2,point p0){
+return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+int dots_inline(point p1,point p2,point p3){
+return zero(xmult(p1,p2,p3));
+}
+int dot_online_in(point p,line l){
+return zero(xmult(p,l.a,l.b))&#38;&#38;(l.a.x-p.x)*(l.b.x-p.x)&lt;eps&#38;&#38;(l.a.y-p.y)*(l.b.y-p.y)&lt;eps;
+}
+int same_side(point p1,point p2,line l){
+return xmult(l.a,p1,l.b)*xmult(l.a,p2,l.b)&gt;eps;
+}
+int intersect_in(line u,line v){
+if (!dots_inline(u.a,u.b,v.a)||!dots_inline(u.a,u.b,v.b))
+return !same_side(u.a,u.b,v)&#38;&#38;!same_side(v.a,v.b,u);
+return dot_online_in(u.a,v)||dot_online_in(u.b,v)||dot_online_in(v.a,u)||dot_online_in(v.b,u);
+}
+
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+	freopen(&#34;out&#34;,&#34;w&#34;,stdout);
+#endif
+
+	int t;
+	scanf(&#34;%d&#34;,&#38;t);
+	line l,tmp;
+	double x[2],y[2];
+	while(t--)
+	{
+		scanf(&#34;%lf %lf %lf %lf %lf %lf %lf %lf&#34;,&#38;l.a.x,&#38;l.a.y,&#38;l.b.x,&#38;l.b.y,&#38;x[0],&#38;y[0],&#38;x[1],&#38;y[1]);
+		bool flag = true;
+		for(int i=0;i&lt;2 &#38;&#38; flag;i++)
+		{
+            tmp.a.x=x[i];tmp.b.x=x[i];
+			tmp.a.y=y[0];tmp.b.y=y[1];
+            if(intersect_in(l,tmp))
+            {
+                flag=false;
+                break;
+            }
+		}
+        for(int i=0;i&lt;2 &#38;&#38; flag;i++)
+		{
+            tmp.a.y=y[i];tmp.b.y=y[i];
+			tmp.a.x=x[0];tmp.b.x=x[1];
+            if(intersect_in(l,tmp))
+            {
+                flag=false;
+                break;
+            }
+		}
+		if((max(l.a.x,l.b.x)&lt;=max(x[0],x[1]) &#38;&#38;
+     min(l.a.x,l.b.x)&gt;=min(x[0],x[1]))&#38;&#38;(max(l.a.y,l.b.y)&lt;=max(y[0],y[1]) &#38;&#38;
+     min(l.a.y,l.b.y)&gt;=min(y[0],y[1])))
+        flag = false;
+
+		if(!flag)
+			puts(&#34;T&#34;);
+		else
+			puts(&#34;F&#34;);
+	}
+
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

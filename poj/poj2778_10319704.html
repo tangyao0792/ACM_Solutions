@@ -1,0 +1,189 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2778">2778</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 464K</td><td width=10px></td><td><b>Time:</b> 63MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int MOD =100000;
+
+struct Node
+{
+    int next[4];
+    int fail,cnt;
+    void init()
+    {
+        cnt=fail=next[0]=next[1]=next[2]=next[3]=0;
+    }
+}node[150];
+
+int cnt;        //分配节点
+int n,m;
+int queue[150],head,tail;
+int hash[150];      //hash[i]表示第i个节点是第几状态
+int map[256];
+
+long long a[120][120],b[120][120],c[120][120];
+
+void insert(char *str)
+{
+    int pos=0;
+    for(int i=0;str[i];i++)
+    {
+        int x=map[str[i]];
+        if(!node[pos].next[x])
+        {
+            node[++cnt].init();
+            node[pos].next[x]=cnt;
+        }
+        pos=node[pos].next[x];
+    }
+    node[pos].cnt++;
+}
+
+void make_fail()
+{
+    head=tail=0;
+    for(int i=0;i&lt;4;i++)
+    {
+        if(node[0].next[i])
+        {
+            queue[tail++]=node[0].next[i];
+            node[node[0].next[i]].fail=0;
+        }
+    }
+
+    while(head&lt;tail)
+    {
+        int cur=queue[head++];
+        int fail=node[cur].fail;
+        if(node[fail].cnt)
+        {
+            node[cur].cnt=1;
+        }
+        for(int i=0;i&lt;4;i++)
+        {
+            if(node[cur].next[i])
+            {
+                queue[tail++]=node[cur].next[i];
+                node[node[cur].next[i]].fail=node[fail].next[i];
+            }
+            else
+            {
+                node[cur].next[i]=node[fail].next[i];
+            }
+        }
+    }
+
+    int nst=0;      //状态数
+
+    for(int i=0;i&lt;=cnt;i++)
+    {
+        if(!node[i].cnt)
+        {
+            hash[i]=nst++;
+        }
+    }
+
+    memset(b,0,sizeof(b));
+    for(int i=0;i&lt;=cnt;i++)
+    {
+        if(node[i].cnt)
+        {
+            continue;
+        }
+        for(int j=0;j&lt;4;j++)
+        {
+            int tmp=node[i].next[j];
+            if(!node[tmp].cnt)
+            {
+                b[hash[i]][hash[tmp]]++;
+            }
+        }
+    }
+    cnt=nst-1;          //cnt是全局变量。。
+}
+
+void multiply(long long a[120][120],long long b[120][120])  //a=a*b
+{
+    memset(c,0,sizeof(c));
+
+    for(int i=0;i&lt;=cnt;i++)
+    {
+        for(int j=0;j&lt;=cnt;j++)
+        {
+            for(int k=0;k&lt;=cnt;k++)
+            {
+                c[i][j]+=a[i][k]*b[k][j];
+            }
+        }
+    }
+
+    for(int i=0;i&lt;=cnt;i++)
+    {
+        for(int j=0;j&lt;=cnt;j++)
+        {
+            a[i][j]=c[i][j]%MOD;
+        }
+    }
+
+}
+
+int solve()
+{
+    make_fail();
+
+    memset(a,0,sizeof(a));
+    a[0][0]=1;
+
+    while(n)
+    {
+        if(n&#38;1)
+        {
+            multiply(a,b);
+        }
+        multiply(b,b);
+        n=n&gt;&gt;1;
+    }
+
+    int ans=0;
+    for(int i=0;i&lt;=cnt;i++) ans+=a[0][i];
+
+    return ans%MOD;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+    memset(map,0,sizeof(map));
+    map[&#39;A&#39;]=0;map[&#39;C&#39;]=1;map[&#39;T&#39;]=2;map[&#39;G&#39;]=3;
+
+    while(scanf(&#34;%d %d&#34;,&#38;m,&#38;n)==2)
+    {
+        cnt=0;
+        node[cnt].init();
+        for(int i=0;i&lt;m;i++)
+        {
+            char str[100];
+            scanf(&#34;%s&#34;,str);
+            insert(str);
+        }
+        printf(&#34;%d\n&#34;,solve());
+    }
+
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

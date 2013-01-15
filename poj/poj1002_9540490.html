@@ -1,0 +1,113 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_c.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1002">1002</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 560K</td><td width=10px></td><td><b>Time:</b> 407MS</td></tr>
+<tr><td><b>Language:</b> C</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_c" style="font-family:Courier New,Courier,monospace">#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+int cmp(const void* ,const void*);
+void main()
+{
+	int n;
+	int x;
+	char temp[101];
+	int i, j;
+	int flag = 0;
+	int num[100000];
+	int count;
+	scanf(&#34;%d&#34;, &#38;n);
+	for( i = 0; i &lt; n; i++)
+	{
+		scanf(&#34;%s&#34;, temp);
+		x = 0;
+		for(j = 0; temp[j]; j++)
+		{
+
+			if(temp[j] == &#39;Q&#39; || temp[j] == &#39;-&#39;)
+			{
+				continue;
+			}
+			else if((temp[j] &gt;&#39;0&#39;-1) &#38;&#38; (temp[j] &lt; &#39;9&#39; +1))
+			{
+				x = x*10 + temp[j] - 48;			
+			}
+			else if(temp[j] &gt; &#39;A&#39;- 1 &#38;&#38; temp[j] &lt;&#39;Z&#39;)
+			{
+				switch (temp[j])
+				{
+				case &#39;A&#39;:
+				case &#39;B&#39;:
+				case &#39;C&#39;:
+					x = x*10 +2;break;
+				case &#39;D&#39;:
+				case &#39;E&#39;:
+				case &#39;F&#39;:
+					x = x * 10 +3; break;
+				case &#39;G&#39;:
+				case &#39;H&#39;:
+				case &#39;I&#39;:
+					x = x * 10 + 4;break;
+				case &#39;J&#39;:
+				case &#39;K&#39;:
+				case &#39;L&#39;: 
+					x = x *10 +5; break;
+				case &#39;M&#39;:
+				case &#39;N&#39;:
+				case &#39;O&#39;:
+					x = x * 10 + 6; break;
+				case &#39;P&#39;:
+				case &#39;R&#39;:
+				case &#39;S&#39;:
+					x = x*10 +7; break;
+				case &#39;T&#39;:
+				case &#39;U&#39;:
+				case &#39;V&#39;:
+					x = x*10 +8;break;
+				case &#39;W&#39;:
+				case &#39;X&#39;:
+				case &#39;Y&#39;:
+					x = x * 10 + 9; break;
+				default:
+					;
+				}
+			}
+		}
+		num[i] = x;
+	}
+	
+	qsort(num,n,sizeof(int),cmp);
+	
+	for(i = 0; i &lt; n; i++)
+	{
+		count = 1;
+		while(num[i] == num[i+1])
+		{
+			i++;
+			count++;
+		}
+		if(count &gt; 1)
+		{
+			printf(&#34;%03d-%04d %d\n&#34;,num[i]/10000, num[i]%10000,count);
+			flag = 1;
+		}
+	}
+	if( flag == 0 )
+	{
+		printf(&#34;No duplicates.&#34;);
+	}
+
+}
+int cmp(const void* a,const void *b)
+{
+	return *(int*)a-*(int*)b;
+}</pre>
+</ul>
+</body></html>

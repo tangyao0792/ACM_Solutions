@@ -1,0 +1,145 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2826">2826</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 112K</td><td width=10px></td><td><b>Time:</b> 32MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+
+#include &lt;math.h&gt;
+#define eps 1e-8
+#define zero(x) (((x)&gt;0?(x):-(x))&lt;eps)
+#define abs(x) ((x)&lt;eps?(-x):(x))
+#define max(a,b) (a&gt;b?a:b)
+#define min(a,b) (a&lt;b?a:b)
+
+struct point{double x,y;};
+struct line{point a,b;};
+
+line l1,l2;
+
+double xmult(point p1,point p2,point p0){
+return (p1.x-p0.x)*(p2.y-p0.y)-(p2.x-p0.x)*(p1.y-p0.y);
+}
+int dots_inline(point p1,point p2,point p3){
+return zero(xmult(p1,p2,p3));
+}
+int dot_online_in(point p,line l){
+return zero(xmult(p,l.a,l.b))&#38;&#38;(l.a.x-p.x)*(l.b.x-p.x)&lt;eps&#38;&#38;(l.a.y-p.y)*(l.b.y-p.y)&lt;eps;
+}
+int dot_online_ex(point p,line l){
+return dot_online_in(p,l)&#38;&#38;(!zero(p.x-l.a.x)||!zero(p.y-l.a.y))&#38;&#38;(!zero(p.x-l.b.x)||!zero(p.y-
+l.b.y));
+}
+int same_side(point p1,point p2,line l){
+return xmult(l.a,p1,l.b)*xmult(l.a,p2,l.b)&gt;eps;
+}
+int opposite_side(point p1,point p2,line l){
+return xmult(l.a,p1,l.b)*xmult(l.a,p2,l.b)&lt;-eps;
+}
+int intersect_in(line u,line v){
+if (!dots_inline(u.a,u.b,v.a)||!dots_inline(u.a,u.b,v.b))
+return !same_side(u.a,u.b,v)&#38;&#38;!same_side(v.a,v.b,u);
+return dot_online_in(u.a,v)||dot_online_in(u.b,v)||dot_online_in(v.a,u)||dot_online_in(v.b,u);
+}
+int intersect_ex(line u,line v){
+return opposite_side(u.a,u.b,v)&#38;&#38;opposite_side(v.a,v.b,u);
+}
+point intersection(line u,line v){
+point ret=u.a;
+double t=((u.a.x-v.a.x)*(v.a.y-v.b.y)-(u.a.y-v.a.y)*(v.a.x-v.b.x))/((u.a.x-u.b.x)*(v.a.y-v.b.y)-(u.a.y-u.b.y)*(v.a.x-v.b.x));
+ret.x+=(u.b.x-u.a.x)*t;
+ret.y+=(u.b.y-u.a.y)*t;
+return ret;
+}
+
+void swap(point &#38;p1,point &#38;p2)
+{
+	point tmp=p1;
+	p1=p2;
+	p2=tmp;
+}
+int parallel(line u,line v){
+return zero((u.a.x-u.b.x)*(v.a.y-v.b.y)-(v.a.x-v.b.x)*(u.a.y-u.b.y));
+}
+
+double solve()
+{
+	if(l1.a.y==l1.b.y || l2.a.y==l2.b.y || (!intersect_in(l1,l2)) ||
+    parallel(l1,l2))
+		return 0;
+
+	if(l1.a.y&gt;l1.b.y+eps)	swap(l1.a,l1.b);
+	if(l2.a.y&gt;l2.b.y+eps)	swap(l2.a,l2.b);
+
+	point ip=intersection(l1,l2);
+
+	if(l1.b.y&lt;ip.y || l2.b.y+eps&lt;ip.y)
+		return 0;
+
+	point h,l;
+	bool flag=true;
+	if(l1.b.y&gt;l2.b.y+eps)
+	{
+		h=l1.b;
+		l=l2.b;
+	}
+	else if(l1.b.y&lt;l2.b.y-eps)
+	{
+		h=l2.b;
+		l=l1.b;
+	}
+	else
+	{
+	    flag=false;
+	    h=l2.b;
+		l=l1.b;
+	}
+
+	if(flag &#38;&#38; ((h.x&gt;=l.x &#38;&#38; ip.x+eps&lt; l.x &#38;&#38;(l.y-ip.y)*(h.x-ip.x) &lt; (l.x-ip.x)*(h.y-ip.y)+eps) ||
+             (h.x&lt;=l.x &#38;&#38; ip.x&gt; l.x+eps&#38;&#38;(l.y-ip.y)*(h.x-ip.x) &gt; (l.x-ip.x)*(h.y-ip.y)-eps)))
+		return 0;
+
+	line tmp;
+	tmp.a.x=min(min(l1.a.x,l2.a.x),min(l1.b.x,l2.b.x));
+	tmp.b.x=max(max(l1.a.x,l2.a.x),max(l1.b.x,l2.b.x));
+	tmp.a.y=tmp.b.y=l.y;
+
+	point p1=intersection(tmp,l1);
+	point p2=intersection(tmp,l2);
+
+	double dist=p1.x-p2.x;
+	if(dist&lt;-eps) dist*=-1;
+	return dist*(l.y-ip.y)/2;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;data.txt&#34;,&#34;r&#34;,stdin);
+	freopen(&#34;out.txt&#34;,&#34;w&#34;,stdout);
+#endif
+
+	int t;
+	scanf(&#34;%d&#34;,&#38;t);
+	while(t--)
+	{
+		scanf(&#34;%lf %lf %lf %lf&#34;,&#38;l1.a.x,&#38;l1.a.y,&#38;l1.b.x,&#38;l1.b.y);
+		scanf(&#34;%lf %lf %lf %lf&#34;,&#38;l2.a.x,&#38;l2.a.y,&#38;l2.b.x,&#38;l2.b.y);
+
+		printf(&#34;%.2f\n&#34;,solve()+eps);
+
+	}
+
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

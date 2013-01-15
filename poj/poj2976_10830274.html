@@ -1,0 +1,88 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2976">2976</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 212K</td><td width=10px></td><td><b>Time:</b> 63MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;iostream&gt;
+#include&lt;algorithm&gt;
+
+using namespace std;
+
+const int MAXN=1020;
+const double eps=1e-4;
+
+int n,k;
+typedef long long LL;
+LL a[MAXN],b[MAXN];
+double d[MAXN];
+int r[MAXN];
+
+bool cmp(int x,int y)
+{
+	return d[x]&gt;d[y];
+}
+inline double abs(double x)
+{
+	return x&lt;0?(-x):x;
+}
+
+double Dinkelback()
+{
+	double ans,l;
+	l=30;
+	while(true)
+	{
+		ans=l;
+		for(int i=0;i&lt;n;i++)
+		{
+			r[i]=i;
+			d[i]=double(a[i])-l*b[i];
+		}
+
+		double p=0,q=0;
+		sort(r,r+n,cmp);
+		for(int i=0;i&lt;n-k;i++)
+		{
+			p+=a[r[i]];
+			q+=b[r[i]];
+		}
+		l=p/q;
+		if(abs(ans-l)&lt;eps)
+			break;
+	}
+	return 100*ans;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in&#34;,&#34;r&#34;,stdin);
+#endif
+	while(scanf(&#34;%d %d&#34;,&#38;n,&#38;k)==2)
+	{
+		if(n==0 &#38;&#38; k==0)
+			break;
+		for(int i=0;i&lt;n;i++)
+		{
+			scanf(&#34;%lld&#34;,&#38;a[i]);
+		}
+		for(int i=0;i&lt;n;i++)
+		{
+			scanf(&#34;%lld&#34;,&#38;b[i]);
+		}
+		printf(&#34;%.0f\n&#34;,Dinkelback());
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

@@ -1,0 +1,42 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_c.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1006">1006</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 120K</td><td width=10px></td><td><b>Time:</b> 47MS</td></tr>
+<tr><td><b>Language:</b> C</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_c" style="font-family:Courier New,Courier,monospace">#include &lt;stdio.h&gt;
+
+void main()
+{
+	int a, b, c, d;
+	int cycle;
+	int day;
+	int i = 0;
+	scanf(&#34;%d %d %d %d&#34;, &#38;a, &#38;b, &#38;c, &#38;d);
+	while(a != -1)
+	{
+		i++;
+		a = a % 23;
+		b = b % 28;
+		c = c % 33;
+		cycle = 28 * 33 * 6 * a + 23 * 33 * 19 * b + 23 * 28 * 2 * c;
+		cycle = cycle % 21252;
+		day = (cycle - d) % 21252 + 21252;
+		day = day % 21252;
+		if(day == 0)
+		{
+			day = 21252;
+		}
+		printf(&#34;Case %d: the next triple peak occurs in %d days.\n&#34;, i, day);
+		scanf(&#34;%d %d %d %d&#34;, &#38;a, &#38;b, &#38;c, &#38;d);
+	}
+}</pre>
+</ul>
+</body></html>

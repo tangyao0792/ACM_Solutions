@@ -1,0 +1,159 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2774">2774</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 15724K</td><td width=10px></td><td><b>Time:</b> 469MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+#include&lt;cmath&gt;
+
+#define min(a,b) (a&lt;b?a:b)
+#define max(a,b) (a&gt;b?a:b)
+
+const int N=200200;
+
+//INIT: n = strlen(s) + 1;
+//CALL: makesa(); lcp();SparseTable();get(x,y)µÃµœlcp
+//×¢: height[i] = lcp(sa[i], sa[i-1])
+//sa[i]±íÊŸÅÅÃûÎªiµÄºó×ºÊÇË­£¬rank[i]±íÊŸŽÓs[i]¿ªÊŒµÄºó×ºÅÅÃûÊÇ¶àÉÙ
+//sa,rank 0....n-1   height 1...n-1
+//tmp ºÍtopÓÃÓÚ»ùÊýÅÅÐò£¬ŽóÐ¡ÒòÒªÅÅÐòµÄÊýµÄ·¶Î§¶ø¶š
+//
+
+
+char s[N];                          // N &gt; 256
+int n, sa[N], height[N], rank[N], tmp[N], top[N];
+int x;
+int st[20][N];
+
+void SparseTable()
+{
+	for(int i=1;i&lt;n;i++)
+		st[0][i]=height[i];
+	for(int j=1;(1&lt;&lt;j) &lt;n;j++)
+		for(int i=0; i+(1&lt;&lt;(j-1)) &lt;n; i++)
+			st[j][i]=min(st[j-1][i],st[j-1][i+(1&lt;&lt;(j-1))]);
+}
+
+void swap(int &#38;x,int &#38;y)
+{
+	if(x&gt;y)
+	{
+		int t=x;
+		x=y;
+		y=t;
+	}
+}
+
+int get(int x,int y)
+{
+	x=rank[x];y=rank[y];
+	swap(x,y);
+	x++;
+	int k=int(log(double(y-x+1))/log(2.0));
+	return min(st[k][x],st[k][y-(1&lt;&lt;k)+1]);
+}
+void makesa()
+{                       // O(N * log N)
+	int i, j, len, na;
+	na = (n &lt; 256 ? 256 : n);
+	memset(top, 0, na * sizeof(int));
+	for (i = 0; i &lt; n ; i++)
+		top[ rank[i] = s[i] &#38; 0xff ]++;
+	for (i = 1; i &lt; na; i++)
+		top[i] += top[i - 1];
+	for (i = 0; i &lt; n ; i++)
+		sa[ --top[ rank[i] ] ] = i;
+	for (len = 1; len &lt; n; len &lt;&lt;= 1)
+	{
+		for (i = 0; i &lt; n; i++)
+		{
+			j = sa[i] - len;
+			if (j &lt; 0) j += n;
+			tmp[ top[ rank[j] ]++ ] = j;
+		}
+		sa[ tmp[ top[0] = 0 ] ] = j = 0;
+		for (i = 1; i &lt; n; i++)
+		{
+			if (rank[ tmp[i] ] != rank[ tmp[i-1] ] ||
+					rank[ tmp[i]+len ]!=rank[ tmp[i-1]+len ])
+				top[++j] = i;
+			sa[ tmp[i] ] = j;
+		}
+		memcpy(rank, sa , n * sizeof(int));
+		memcpy(sa  , tmp, n * sizeof(int));
+		if (j &gt;= n - 1) break;
+	}
+}
+
+void make_height()
+{                        
+	int i, j, k;
+	for (j = rank[height[i=k=0]=0]; i &lt; n - 1; i++, k++)	
+		while (k &gt;= 0 &#38;&#38; s[i] != s[ sa[j-1] + k ])
+			height[j] = (k--), j = rank[ sa[j] + 1 ];								
+}
+
+int solve()
+{
+	makesa();
+	make_height();
+	SparseTable();
+	int l=1,r=n-1;
+	while(l&lt;=r)
+	{
+		int mid=(l+r)&gt;&gt;1;
+		int low,high;
+		low=high=sa[1];
+		bool flag=false;
+		for(int i=1;i&lt;n;i++)
+		{
+			if(height[i]&lt;mid)
+			{
+				low=high=sa[i];
+			}
+			else
+			{
+				if(low&gt;sa[i])	low=sa[i];
+				if(high&lt;sa[i])	high=sa[i];
+				int len=high-low;
+				if(len&gt;=mid &#38;&#38; low&lt;=x &#38;&#38; high&gt;=x)
+				{
+					flag=true;
+					break;
+				}
+			}
+		}
+		if(flag)
+			l=mid+1;
+		else
+			r=mid-1;
+	}
+	return r;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	scanf(&#34;%s&#34;,s);
+	n=strlen(s);
+	x=n;
+	s[n]=&#39;#&#39;;
+	scanf(&#34;%s&#34;,s+n+1);
+	n=strlen(s)+1;
+
+	printf(&#34;%d\n&#34;,solve());
+	return 0;
+}</pre>
+</ul>
+</body></html>

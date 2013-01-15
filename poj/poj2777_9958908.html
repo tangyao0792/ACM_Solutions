@@ -1,0 +1,154 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2777">2777</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 1676K</td><td width=10px></td><td><b>Time:</b> 594MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+const int MAXN=100100;
+const int MAXT=50;
+
+int color[MAXN*4];
+bool in[MAXT];
+bool mix[MAXN*4];
+
+void PushDown(int pos)
+{
+    if(!mix[pos])
+    {
+        mix[pos&lt;&lt;1]=mix[pos&lt;&lt;1|1]=false;
+        color[pos&lt;&lt;1]=color[pos&lt;&lt;1|1]=color[pos];
+        mix[pos]=true;
+    }
+}
+
+void PushUp(int pos)
+{
+    if(color[pos&lt;&lt;1] == color[pos&lt;&lt;1|1] &#38;&#38; !mix[pos&lt;&lt;1] &#38;&#38; !mix[pos&lt;&lt;1|1])
+    {
+        color[pos]=color[pos&lt;&lt;1];
+        mix[pos]=false;
+    }
+    else
+        mix[pos]=true;
+}
+
+void update(int a,int b,int v,int l,int r,int pos)
+{
+
+    if(a&lt;=l &#38;&#38; b&gt;=r)
+    {
+        mix[pos]=false;
+        color[pos]=v;
+        return;
+    }
+
+    if(l==r)    return;
+    int mid=(l+r)&gt;&gt;1;
+    PushDown(pos);
+
+    if(a&lt;=mid)
+        update(a,b,v,l,mid,pos&lt;&lt;1);
+    if(b&gt;mid)
+        update(a,b,v,mid+1,r,pos&lt;&lt;1|1);
+
+    PushUp(pos);
+}
+void query(int a,int b,int l,int r,int pos)
+{
+    if(!mix[pos])
+    {
+        in[color[pos]]=true;
+        return;
+    }
+
+    PushDown(pos);
+
+    if(l==r)    return;
+
+    int mid=(l+r)&gt;&gt;1;
+
+
+    if(a&lt;=mid)
+        query(a,b,l,mid,pos&lt;&lt;1);
+    if(b&gt;mid)
+        query(a,b,mid+1,r,pos&lt;&lt;1|1);
+
+    PushUp(pos);
+}
+
+void build(int l,int r,int pos)
+{
+    if(l==r)
+    {
+        color[pos]=1;
+        return;
+    }
+    int mid=(l+r)&gt;&gt;1;
+
+    build(l,mid,pos&lt;&lt;1);
+    build(mid+1,r,pos&lt;&lt;1|1);
+
+    PushUp(pos);
+}
+void swap(int &#38;a,int &#38;b)
+{
+    int tmp=a;
+    a=b;
+    b=tmp;
+}
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+    freopen(&#34;out.txt&#34;, &#34;w&#34;, stdout);
+#endif
+    int n,t,o;
+    char op[10];
+    scanf(&#34;%d %d %d&#34;,&#38;n,&#38;t,&#38;o);
+    {
+        build(1,n,1);
+        for(int i=0;i&lt;o;i++)
+        {
+            scanf(&#34;%s&#34;,op);
+            if(op[0]==&#39;C&#39;)
+            {
+                int a,b,c;
+                scanf(&#34;%d %d %d&#34;,&#38;a,&#38;b,&#38;c);
+                if(a&gt;b)
+                    swap(a,b);
+                update(a,b,c,1,n,1);
+            }
+            else
+            {
+                int a,b;
+                scanf(&#34;%d %d&#34;,&#38;a,&#38;b);
+                memset(in,0,sizeof(in));
+                if(a&gt;b )
+                    swap(a,b);
+                query(a,b,1,n,1);
+                int ans=0;
+
+                for(int i=1;i&lt;=t;i++)
+                    if(in[i])
+                        ans++;
+
+                printf(&#34;%d\n&#34;,ans);
+            }
+        }
+    }
+    return 0;
+}
+</pre>
+</ul>
+</body></html>

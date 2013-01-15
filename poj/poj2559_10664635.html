@@ -1,0 +1,76 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=2559">2559</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 2344K</td><td width=10px></td><td><b>Time:</b> 157MS</td></tr>
+<tr><td><b>Language:</b> G++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+
+#define max(a,b) (a&gt;b?a:b)
+
+typedef long long LL;
+
+const int MAXN=100100;
+
+LL stk[MAXN][2],a[MAXN];
+int left[MAXN],right[MAXN];
+int sp,n;
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+	freopen(&#34;in.txt&#34;,&#34;r&#34;,stdin);
+#endif
+	while(scanf(&#34;%d&#34;,&#38;n)==1 &#38;&#38; n)
+	{
+		sp=0;
+		LL ans=0;
+		for(int i=0;i&lt;n;i++)
+		{
+			scanf(&#34;%lld&#34;,&#38;a[i]);
+		}
+		sp=0;
+		for(int i=0;i&lt;n;i++)
+		{
+		    left[i]=1;
+		    while(sp &#38;&#38; stk[sp-1][0]&gt;=a[i])
+		    {
+		        sp--;
+		        left[i]+=stk[sp][1];
+		    }
+		    stk[sp][0]=a[i];
+		    stk[sp++][1]=left[i];
+		}
+        sp=0;
+		for(int i=n-1;i&gt;=0;i--)
+		{
+		    right[i]=1;
+		    while(sp &#38;&#38; stk[sp-1][0]&gt;=a[i])
+		    {
+		        sp--;
+		        right[i]+=stk[sp][1];
+		    }
+		    stk[sp][0]=a[i];
+		    stk[sp++][1]=right[i];
+		}
+		LL s=0;
+		for(int i=0;i&lt;n;i++)
+		{
+		    s=a[i]*(left[i]+right[i]-1);
+		    ans=max(ans,s);
+		}
+		printf(&#34;%lld\n&#34;,ans);
+	}
+	return 0;
+}
+</pre>
+</ul>
+</body></html>

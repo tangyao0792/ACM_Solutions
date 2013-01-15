@@ -1,0 +1,89 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="en-US">
+<title>Source Code</title>
+<link type="text/css" rel="stylesheet" href="sh_style.css">
+<script type="text/javascript" src="sh_main.js"></script>
+<script type="text/javascript" src="lang/sh_cpp.js"></script>
+</head><body lang="en-US" link=blue alink=blue vlink=blue onload="sh_highlightDocument()">
+<p align=center><font size=4 color=#333399>Source Code</font></p>
+<table align="center" style="font-size:10pt"><tr><td><b>Problem:</b> <a href="problem?id=1251">1251</a></td><td width=10px></td><td><b>User:</b> <a href="userstatus?user_id=TYplayIT">TYplayIT</a></td></tr>
+<tr><td><b>Memory:</b> 264K</td><td width=10px></td><td><b>Time:</b> 0MS</td></tr>
+<tr><td><b>Language:</b> C++</td><td width=10px></td><td><b>Result:</b> <font color=blue>Accepted</font></td></tr></table>
+<ul><li><font color=#333399 size=5>Source Code</font></li>
+<pre class="sh_cpp" style="font-family:Courier New,Courier,monospace">#include&lt;iostream&gt;
+#include&lt;cstring&gt;
+#include&lt;algorithm&gt;
+
+#ifndef ONLINE_JUDGE
+    #include&lt;cstdio&gt;
+#endif
+
+using namespace std;
+
+typedef struct
+{
+    int w, u, v;
+}E;
+
+E e[27*27];
+int u[27];
+
+bool comp(E a, E b);
+
+int main()
+{
+#ifndef ONLINE_JUDGE
+    freopen(&#34;in.txt&#34;, &#34;r&#34;, stdin);
+#endif
+    int n, nSum;
+    char s, c;
+    while(cin &gt;&gt; n)
+    {
+        if(n == 0)
+        {
+            break;
+        }
+        memset(e, 0, sizeof(e));
+        memset(u, 0, sizeof(u));
+        int i, j, cnt, we, ne;
+        for(i = 0,cnt = 0; i &lt; n-1; i++)
+        {
+            cin &gt;&gt; s &gt;&gt; ne;
+            for(j = 0; j &lt; ne; j++)
+            {
+                cin &gt;&gt; c &gt;&gt; we;
+                e[cnt].w = we;
+                e[cnt].u = s-&#39;A&#39;;
+                e[cnt++].v = c-&#39;A&#39;;
+                u[s-&#39;A&#39;]=u[c-&#39;A&#39;]=1;
+            }
+        }
+        sort(e, e+cnt, comp);
+        nSum = e[0].w;
+        u[e[0].u] = u[e[0].v]= -1;
+        for(j = 1; j &lt; cnt; j++)
+        {
+            for(i = 1; i &lt; cnt; i++)
+            {
+                if(u[e[i].u]*u[e[i].v] &lt; 0)
+                {
+                    nSum += e[i].w;
+                    u[e[i].u] = u[e[i].v] = -1;
+                    break;
+                }
+            }
+
+        }
+        cout &lt;&lt; nSum &lt;&lt; endl;
+    }
+    return 0;
+}
+
+bool comp(E a, E b)
+{
+    return a.w &lt; b.w;
+}
+</pre>
+</ul>
+</body></html>

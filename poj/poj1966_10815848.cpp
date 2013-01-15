@@ -1,34 +1,35 @@
 #include<cstdio>
 #include<cstring>
-#include<iostream>
+
+#define min(a,b) (a<b?a:b)
+
+const int INF=1<<29;
+#define MAXN 222
+#define MAXM 222*222*2
 
 using namespace std;
-
-inline int ABS(int x)
-{
-	return x>0?x:(-x);
-}
-
-int m;
-const int MAXN=	222;
-const int MAXM=2222;
-const int INF=1<<29;
-
-int in[MAXN],out[MAXN],num[MAXN];
-
 struct node
 {
-
 	int ver;    // vertex
 	int cap;    // capacity
 	int flow;   // current flow in this arc
 	int next, rev;
 }edge[MAXM];
-int dist[MAXN], numbs[MAXN], src, des, n;
+int dist[MAXN], numbs[MAXN], src, des, n,m;
 int head[MAXN], e;
-inline void add(int x, int y, int c)
+int u[MAXM],v[MAXM],cap[MAXM],ncnt;
+
+inline void addback(int x,int y,int c)
 {
-//    printf("%d  ->  %d  :   %d\n",x,y,c);
+	u[ncnt]=x;
+	v[ncnt]=y;
+	cap[ncnt++]=c;
+}
+
+inline void add(int x, int y, int c,int f=0)
+{
+	if(!f)
+		addback(x,y,c);
 	//e记录边的总数
 	edge[e].ver = y;
 	edge[e].cap = c;
@@ -44,16 +45,8 @@ inline void add(int x, int y, int c)
 	edge[e].next = head[y];
 	head[y] = e++;
 }
-void init()
-{
-	memset(out,0,sizeof(out));
-	memset(in,0,sizeof(in));
-	e = 0;
-	memset(head, -1, sizeof(head));
-}
 void rev_BFS()
 {
-
 	int Q[MAXN], qhead = 0, qtail = 0;
 	for(int i = 1; i <= n; ++i)
 	{
@@ -66,7 +59,6 @@ void rev_BFS()
 	numbs[0] = 1;
 	while(qhead != qtail)
 	{
-
 		int v = Q[qhead++];
 		for(int i = head[v]; i != -1; i = edge[i].next)
 		{
@@ -78,7 +70,11 @@ void rev_BFS()
 		}
 	}
 }
-
+void init()
+{
+	e = 0;
+	memset(head, -1, sizeof(head));
+}
 int maxflow()
 {
 
@@ -133,75 +129,63 @@ int maxflow()
 	}
 	return totalflow;
 }
+int g[MAXN][MAXN];
 
 int main()
 {
 #ifndef ONLINE_JUDGE
-	freopen("in.txt","r",stdin);
+	freopen("f.in","r",stdin);
 #endif
-
-	int t;
-	scanf("%d",&t);
-	while(t--)
+	while(scanf("%d %d",&n,&m)==2)
 	{
+//		printf("%d	%d\n",n,m);
+        memset(g,0,sizeof(g));
+		ncnt=0;
 		init();
-		scanf("%d %d",&n,&m);
+		for(int i=1;i<=n;i++)
+		{
+			add(i,i+n,1);
+		}
+		char str[22];
 		for(int i=0;i<m;i++)
 		{
-			int x,y,f;
-			scanf("%d %d %d",&x,&y,&f);
-			if(x==y)    continue;
-			if(f==1)
-			{
-				out[x]++,in[y]++;
-			}
-			else
-			{
-				out[x]++,in[y]++;	//edge is pretend x->y
-				add(y,x,1);			//y->x for maxflow
-			}
+			scanf("%s",str);
+			int x,y;
+//			scanf(" (%d,%d)",&x,&y);
+			sscanf(str,"(%d,%d)",&x,&y);
+			x++,y++;
+			g[x][y]=1;
+			g[y][x]=1;
+//			printf("%d	->	%d\n",x,y);
+			add(x+n,y,INF);
+			add(y+n,x,INF);
 		}
-		bool flag=true;
-		int sum=0;
-		for(int i=1;i<=n;i++)
-		{
-			int tmp=out[i]-in[i];
-			if(ABS(tmp)%2==1)
-			{
-				flag=false;
-				break;
-			}
-			else
-				num[i]=tmp/2;
-		}
-		if(!flag)
-		{
-			puts("impossible");
-			continue;
-		}
-		for(int i=1;i<=n;i++)
-		{
-			if(num[i]>0)
-			{
-				add(i,n+1,num[i]);
-                sum+=num[i];
-			}
-			else if(num[i]<0)
-			{
-				add(n+2,i,-num[i]);
-			}
-		}
-		src=n+2;des=n+1;
-		n+=2;
-		if(sum==maxflow())
-		{
-			puts("possible");
-		}
-		else
-		{
-			puts("impossible");
-		}
-	}
+		int ans=INF;
+		int size=n;
+		n=n*2+2;
 
+
+		for(int i=1;i<=size;i++)
+			for(int j=i+1;j<=size;j++)
+			{
+				if(g[i][j]) continue;
+				init();
+				for(int k=0;k<ncnt;k++)
+				{
+					add(u[k],v[k],cap[k],1);
+				}
+
+				src=i+size;
+				des=j;
+//				puts("1");
+				int tmp=maxflow();
+//				printf("%d	->	%d:	%d\n",i,j,tmp);
+				ans=min(ans,tmp);
+			}
+		if(ans>size)
+			ans=size;
+		printf("%d\n",ans);
+
+	}
 	return 0;
 }
